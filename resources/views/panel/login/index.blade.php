@@ -1,7 +1,6 @@
 @extends("panel.layout.app")
 @section("content")
 
-
     <div class="modal fade bd-example-modal-lg" style="overflow: scroll" id="add-modal" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -34,13 +33,56 @@
                     </form>
                 </div>
                 <div class="modal-footer" style="background-color: #E5E8E8;">
-                    <button type="button" onclick="createSingIn()" class="btn btn-primary">Kaydet</button>
+                    <button type="button" onclick="createSignIn()" class="btn btn-primary">Kaydet</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
                 </div>
             </div>
         </div>
     </div>
 
+    <div class="modal fade bd-example-modal-lg" style="overflow: scroll" id="update_modal" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: #E5E8E8;">
+                    <h5 class="modal-title" style="font-weight: bold; font-size: 25px !important; ">Kayıt
+                        Güncelle</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="background-color: #F8F9F9; padding: 30px;">
+                    <form id="update_sing_in" method="post" >
+                        @csrf
+                        <div class="row mt-3 mb-4">
+                            <div class="form-group mb-4 col-12">
+
+                                <label class="mb-1" for="name" style="text-decoration: underline;">Adınız : </label>
+                                <input type="text" name="name" id="nameUpdate" class="form-control" required>
+
+                                <label class="mb-1" for="surname" style="text-decoration: underline;">Soyadınız : </label>
+                                <input type="text" name="surname" id="surnameUpdate" class="form-control" required>
+
+                                <label class="mb-1" for="city" style="text-decoration: underline;">Şehir : </label>
+                                <input type="text" name="city" id="cityUpdate" class="form-control" required>
+
+                                <label class="mb-1" for="mail" style="text-decoration: underline;">Mail Adresiniz : </label>
+                                <input type="email" name="mail" id="mailUpdate" class="form-control" required>
+
+                            </div>
+
+                        </div>
+
+                        <input type="hidden" name="updateId" id="updateId">
+
+                    </form>
+                </div>
+                <div class="modal-footer" style="background-color: #E5E8E8;">
+                    <button type="button" onclick="updateSignInPost()" class="btn btn-primary">Kaydet</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="pdf container" style="margin: 60px">
         <div class="row">
@@ -62,6 +104,7 @@
                             <th>Mail Adresi</th>
                             <th>Bulunduğu İl</th>
                             <th></th>
+                            <th></th>
                         </tr>
                         </thead>
                         <tfoot>
@@ -70,6 +113,7 @@
                             <th>Adı - Soyadı</th>
                             <th>Mail Adresi</th>
                             <th>Bulunduğu İl</th>
+                            <th></th>
                             <th></th>
                         </tr>
                         </tfoot>
@@ -98,7 +142,7 @@
             $('#add-modal').modal("toggle");
         }
 
-        function createSingIn() {
+        function createSignIn() {
             var formData = new FormData(document.getElementById('create_sing_in'));
             $.ajax({
                 type: 'POST',
@@ -136,7 +180,7 @@
             });
         }
 
-        function deleteSingIn(id) {
+        function deleteSignIn(id) {
             Swal.fire({
                 icon: "warning",
                 title: "Emin misiniz?",
@@ -182,6 +226,81 @@
             });
         }
 
+        function updateSignIn(id) {
+            var name = $('#nameUpdate');
+            var surname = $('#surnameUpdate');
+            var city = $('#cityUpdate');
+            var mail = $('#mailUpdate');
+            $.ajax({
+                type: 'GET',
+                url: '{{route('sign_in.get')}}',
+                data: {id: id},
+                success: function (data) {
+
+                    $('#updateId').val(id);
+                    name.val(data.name);
+                    surname.val(data.surname);
+                    city.val(data.city);
+                    mail.val(data.mail);
+                    $('#update_modal').modal("toggle");
+
+                },
+                error: function (data) {
+                    var errors = '';
+                    for (datas in data.responseJSON.errors) {
+                        errors += data.responseJSON.errors[datas] + '\n';
+                    }
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Başarısız',
+
+                        html: 'Bilinmeyen bir hata oluştu.\n' + errors,
+                    });
+                }
+            });
+        }
+
+        function updateSignInPost() {
+            var formData = new FormData(document.getElementById('update_sing_in'));
+            $.ajax({
+                type: 'POST',
+                url: '{{route('sign_in.update')}}',
+                dataType: "json",
+                data: formData,
+                headers: {'X-CSRF-TOKEN': "{{csrf_token()}} "},
+                contentType: false,
+                cache: false,
+                processData: false,
+                success: function () {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Başarılı',
+                        html: 'Güncelleme Başarılı!'
+                    });
+
+                    var elements = document.getElementById("update_sing_in").elements;
+
+                    for (var i = 0, element; element = elements[i++];) {
+                        element.value = "";
+                    }
+
+                    $('#update_modal').modal("toggle");
+                    dataTable.ajax.reload(null, false);
+                },
+                error: function (data) {
+                    var errors = '';
+                    for (datas in data.responseJSON.errors) {
+                        errors += data.responseJSON.errors[datas] + '\n';
+                    }
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Başarısız',
+                        html: 'Bilinmeyen bir hata oluştu.\n' + errors,
+                    });
+                }
+            });
+        }
+
         var dataTable = null;
         dataTable = $('#signIn-table').DataTable({
             language: {
@@ -200,6 +319,7 @@
                 {data: 'name'},
                 {data: 'email'},
                 {data: 'city'},
+                {data: 'update'},
                 {data: 'delete'},
             ]
         });

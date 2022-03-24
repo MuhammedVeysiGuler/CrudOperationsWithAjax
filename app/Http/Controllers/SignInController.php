@@ -21,9 +21,12 @@ class SignInController extends Controller
                 return $data->name ." ". $data->surname;
             })
             ->addColumn('delete', function ($data) {
-                return "<button onclick='deleteSingIn(" . $data->id . ")' class='btn btn-danger'>Sil</button>";
+                return "<button onclick='deleteSignIn(" . $data->id . ")' class='btn btn-danger'>Sil</button>";
             })
-            ->rawColumns(['name','delete'])
+            ->addColumn('update', function ($data) {
+                return "<button onclick='updateSignIn(" . $data->id . ")' class='btn btn-warning'>Güncelle</button>";
+            })
+            ->rawColumns(['name','delete','update'])
             ->make(true);
     }
 
@@ -49,6 +52,34 @@ class SignInController extends Controller
             'id' => 'distinct'
         ]);
         SignIn::find($request->id)->delete();
+        return response()->json(['Success' => 'success']);
+    }
+
+    public function get(Request $request){
+
+        $signIn = SignIn::where('id',$request->id)->first();
+        return response([
+            'name' => $signIn->name,
+            'surname' => $signIn->surname,
+            'city' => $signIn->city,
+            'mail' => $signIn->email,
+        ]);
+    }
+
+    public function update(Request $request){
+        $request->validate([
+            'name' => 'required',
+            'surname' => 'required',
+            'city' => 'required',
+            'mail' => 'required | email',
+            'updateId' => 'distinct',
+        ]);
+        SignIn::where('id',$request->updateId)->update([
+            'name' => $request->name,
+            'surname' => $request->surname,
+            'city' => $request->city,
+            'email' => $request->mail,
+        ]);
         return response()->json(['Success' => 'success']);
     }
 }
