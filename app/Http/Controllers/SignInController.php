@@ -20,7 +20,10 @@ class SignInController extends Controller
            ->editColumn('name', function ($data) {
                 return $data->name ." ". $data->surname;
             })
-            ->rawColumns(['name'])
+            ->addColumn('delete', function ($data) {
+                return "<button onclick='deleteSingIn(" . $data->id . ")' class='btn btn-danger'>Sil</button>";
+            })
+            ->rawColumns(['name','delete'])
             ->make(true);
     }
 
@@ -37,6 +40,15 @@ class SignInController extends Controller
         $sign_in->city = $request->city;
         $sign_in->email = $request->mail;
         $sign_in->save();
+        return response()->json(['Success' => 'success']);
+    }
+
+    public function delete(Request $request)
+    {
+        $request->validate([
+            'id' => 'distinct'
+        ]);
+        SignIn::find($request->id)->delete();
         return response()->json(['Success' => 'success']);
     }
 }

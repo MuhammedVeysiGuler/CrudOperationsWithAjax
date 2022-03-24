@@ -61,6 +61,7 @@
                             <th>Adı - Soyadı</th>
                             <th>Mail Adresi</th>
                             <th>Bulunduğu İl</th>
+                            <th></th>
                         </tr>
                         </thead>
                         <tfoot>
@@ -69,6 +70,7 @@
                             <th>Adı - Soyadı</th>
                             <th>Mail Adresi</th>
                             <th>Bulunduğu İl</th>
+                            <th></th>
                         </tr>
                         </tfoot>
                     </table>
@@ -134,6 +136,52 @@
             });
         }
 
+        function deleteSingIn(id) {
+            Swal.fire({
+                icon: "warning",
+                title: "Emin misiniz?",
+                html: "Silmek istediğinize emin misiniz?",
+                showConfirmButton: true,
+                showCancelButton: true,
+                confirmButtonText: "Onayla",
+                cancelButtonText: "İptal",
+                cancelButtonColor: "#e30d0d"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: 'POST',
+                        headers: {'X-CSRF-TOKEN': "{{csrf_token()}} "},
+                        url: '{!! route('sign_in.delete') !!}',
+                        data: {
+                            id: id
+                        },
+                        dataType: "json",
+                        success: function () {
+                            Swal.fire({
+                                icon: "success",
+                                title: "Başarılı",
+                                showConfirmButton: true,
+                                confirmButtonText: "Tamam"
+                            });
+                            dataTable.ajax.reload();
+                        },
+                        error: function () {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Hata!",
+                                html: "<div id=\"validation-errors\"></div>",
+                                showConfirmButton: true,
+                                confirmButtonText: "Tamam"
+                            });
+                            $.each(data.responseJSON.errors, function (key, value) {
+                                $('#validation-errors').append('<div class="alert alert-danger">' + value + '</div>');
+                            });
+                        }
+                    });
+                }
+            });
+        }
+
         var dataTable = null;
         dataTable = $('#signIn-table').DataTable({
             language: {
@@ -152,6 +200,7 @@
                 {data: 'name'},
                 {data: 'email'},
                 {data: 'city'},
+                {data: 'delete'},
             ]
         });
     </script>
