@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\SignInController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('panel.login.index');
-});
+
+Route::get('/', [SignInController::class, "index"])->name('sign_in.index');
+Route::post('/create', [SignInController::class, "create"])->name('sign_in.create');
+Route::get('/fetch', [SignInController::class, 'fetch'])->name('sign_in.fetch');
