@@ -17,10 +17,8 @@ class CreateSignInTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('surname');
-            $table->string('country');
             $table->string('city');
             $table->string('email')->unique();
-            $table->string('password');
             $table->softDeletes();
             $table->timestamps();
         });
