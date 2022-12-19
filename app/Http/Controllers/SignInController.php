@@ -93,7 +93,7 @@ class SignInController extends Controller
             $data = base64_decode($base64Data[1]);  //base64 olan kısım alınır
             $fileName = $_POST['filename'];
 
-            file_put_contents("pdf/" . $fileName, $data);   // ==> "pdf" path dosyası public altında oluşturulmak zorunda, oto oluşturmuyor.
+            file_put_contents("uploads/" . $fileName, $data);   // ==> "uploads" path dosyası public altında oluşturulmak zorunda, oto oluşturmuyor.
             return response()->json(['Success' => 'success']);
         } else {
             return response()->json(['Error' => 'error']);

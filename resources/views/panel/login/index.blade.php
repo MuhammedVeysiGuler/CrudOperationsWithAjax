@@ -340,7 +340,7 @@
         $(document).ready(function ($) {
             $(document).on('click', '.btn_print', function (event) {
                 event.preventDefault();
-                var element = document.getElementById('forPdf');
+                var element = document.getElementById('forPdf');   //pdfin olacağı divin id'si
                 var opt = {
                     margin: 1,
                     filename: "Pdf_" + new Date().toJSON().slice(0,10) + "_" + Math.random() * 23 + ".pdf",
