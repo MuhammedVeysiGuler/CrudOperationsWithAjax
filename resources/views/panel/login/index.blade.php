@@ -135,9 +135,16 @@
                 </div>
             </div>
         </div>
-
-
     </div>
+
+    {{-- butonlar için gerekli olan kütüphaneler --}}
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.2/js/buttons.html5.min.js"></script>
 
     <script type="text/javascript">
         $(document).ready(function () {
@@ -323,7 +330,72 @@
             serverSide: true,
             scrollX: true,
             scrollY: true,
-            ajax: '{!! route('sign_in.fetch') !!}',
+            // lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+            ajax: {
+                url: '{!! route('sign_in.fetch') !!}',
+                data: function (data) {
+                    data.veri1 = "veri_1";
+                    data.veri2 = "veri_2";
+                }
+            },
+
+            dom: 'lBfrtip',
+            buttons: [
+                {
+                    extend: 'collection',
+                    className: 'btn btn-default btn-sm',
+                    text: 'Butonları Kaldır',
+                    buttons: [
+                        {
+                            text: 'Güncelle',
+                            action: function (e, dt, node, config) {
+                                dt.column(-2).visible(!dt.column(-2).visible());
+                            }
+                        },
+                        {
+                            text: 'Sil',
+                            action: function (e, dt, node, config) {
+                                dt.column(-1).visible(!dt.column(-1).visible());
+                            }
+                        }
+                    ]
+                },
+                {
+                    extend: 'copy',
+                    text: '<i class="fa fa-files-o"></i> Kopyala',
+                    titleAttr: 'Copy',
+                    className: 'btn btn-default btn-sm'
+                },
+                {
+                    extend: 'csv',
+                    text: '<i class="fa fa-files-o"></i> CSV',
+                    titleAttr: 'CSV',
+                    className: 'btn btn-default btn-sm',
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                },
+                {
+                    extend: 'excel',
+                    text: '<i class="fa fa-files-o"></i> Excel',
+                    titleAttr: 'Excel',
+                    className: 'btn btn-default btn-sm',
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                },
+                {
+                    extend: 'pdf',
+                    text: '<i class="fa fa-file-pdf-o"></i> PDF',
+                    titleAttr: 'PDF',
+                    className: 'btn btn-default btn-sm',
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                },
+
+            ],
+
             columns: [
                 {data: 'id'},
                 {data: 'name'},
@@ -335,6 +407,8 @@
         });
     </script>
 
+
+
     <script type="text/javascript">
 
         $(document).ready(function ($) {
@@ -343,7 +417,7 @@
                 var element = document.getElementById('forPdf');   //pdfin olacağı divin id'si
                 var opt = {
                     margin: 1,
-                    filename: "Pdf_" + new Date().toJSON().slice(0,10) + "_" + Math.random() * 23 + ".pdf",
+                    filename: "Pdf_" + new Date().toJSON().slice(0, 10) + "_" + Math.random() * 23 + ".pdf",
                     image: {type: 'jpeg', quality: 0.98},
                     html2canvas: {scale: 2},
                     jsPDF: {unit: 'mm', format: 'a4', orientation: 'l'}
