@@ -15,6 +15,10 @@ class SignInController extends Controller
 
     public function fetch()
     {
+        $veri1 = \request()->veri1;
+                                        //datatable tarafından gönderilen harici veriler
+        $veri2 = \request()->veri2;
+
         $signIn = SignIn::all();
         return DataTables::of($signIn)
             ->editColumn('name', function ($data) {
