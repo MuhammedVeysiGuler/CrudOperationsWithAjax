@@ -361,42 +361,49 @@
                     ]
                 },
                 {
-                    extend: 'copy',
-                    text: '<i class="fa fa-files-o"></i> Kopyala',
-                    titleAttr: 'Copy',
-                    className: 'btn btn-default btn-sm'
-                },
-                {
-                    extend: 'csv',
-                    text: '<i class="fa fa-files-o"></i> CSV',
-                    titleAttr: 'CSV',
+                    extend: 'collection',
                     className: 'btn btn-default btn-sm',
-                    exportOptions: {
-                        columns: ':visible'
-                    }
-                },
-                {
-                    extend: 'excel',
-                    text: '<i class="fa fa-files-o"></i> Excel',
-                    titleAttr: 'Excel',
-                    className: 'btn btn-default btn-sm',
-                    exportOptions: {
-                        columns: ':visible'
-                    }
-                },
-                {
-                    extend: 'pdf',
-                    text: '<i class="fa fa-file-pdf-o"></i> PDF',
-                    titleAttr: 'PDF',
-                    className: 'btn btn-default btn-sm',
-                    exportOptions: {
-                        columns: ':visible'
-                    }
+                    text: 'Dışarı Aktar',
+                    buttons: [
+                        {
+                            extend: 'copy',
+                            text: '<i class="fa fa-files-o"></i> Kopyala',
+                            titleAttr: 'Copy',
+                            className: 'btn btn-default btn-sm'
+                        },
+                        {
+                            extend: 'csv',
+                            text: '<i class="fa fa-files-o"></i> CSV',
+                            titleAttr: 'CSV',
+                            className: 'btn btn-default btn-sm',
+                            exportOptions: {
+                                columns: ':visible'
+                            }
+                        },
+                        {
+                            extend: 'excel',
+                            text: '<i class="fa fa-files-o"></i> Excel',
+                            titleAttr: 'Excel',
+                            className: 'btn btn-default btn-sm',
+                            exportOptions: {
+                                columns: ':visible'
+                            }
+                        },
+                        {
+                            extend: 'pdf',
+                            text: '<i class="fa fa-file-pdf-o"></i> PDF',
+                            titleAttr: 'PDF',
+                            className: 'btn btn-default btn-sm',
+                            exportOptions: {
+                                columns: ':visible'
+                            }
+                        }
+                    ]
                 },
 
             ],
 
-            columns: [
+        columns: [
                 {data: 'id'},
                 {data: 'name'},
                 {data: 'email'},
