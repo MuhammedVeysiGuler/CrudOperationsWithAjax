@@ -349,7 +349,13 @@
                     text: 'Butonları Kaldır',
                     buttons: [
                         {
-                            text: 'Güncelle',
+                            text: 'Güncelle Modal',
+                            action: function (e, dt, node, config) {
+                                dt.column(-3).visible(!dt.column(-3).visible());
+                            }
+                        },
+                        {
+                            text: 'Güncelle Page',
                             action: function (e, dt, node, config) {
                                 dt.column(-2).visible(!dt.column(-2).visible());
                             }
