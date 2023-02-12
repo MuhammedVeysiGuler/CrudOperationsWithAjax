@@ -111,6 +111,7 @@
                                 <th>Bulunduğu İl</th>
                                 <th></th>
                                 <th></th>
+                                <th></th>
                             </tr>
                             </thead>
                             <tfoot>
@@ -119,6 +120,7 @@
                                 <th>Adı - Soyadı</th>
                                 <th>Mail Adresi</th>
                                 <th>Bulunduğu İl</th>
+                                <th></th>
                                 <th></th>
                                 <th></th>
                             </tr>
@@ -408,7 +410,8 @@
                 {data: 'name'},
                 {data: 'email'},
                 {data: 'city'},
-                {data: 'update'},
+                {data: 'updateModal'},
+                {data: 'updatePage'},
                 {data: 'delete'},
             ]
         });

@@ -27,10 +27,13 @@ class SignInController extends Controller
             ->addColumn('delete', function ($data) {
                 return "<button onclick='deleteSignIn(" . $data->id . ")' class='btn btn-danger'>Sil</button>";
             })
-            ->addColumn('update', function ($data) {
-                return "<button onclick='updateSignIn(" . $data->id . ")' class='btn btn-warning'>Güncelle</button>";
+            ->addColumn('updateModal', function ($data) {
+                return "<button onclick='updateSignIn(" . $data->id . ")' class='btn btn-warning'>Güncelle Modal</button>";
             })
-            ->rawColumns(['name', 'delete', 'update'])
+            ->addColumn('updatePage', function ($data) {
+                return '<a href="' . route('sign_in.update_view', $data->id) . '" class="btn btn-warning">Güncelle Page</a>';
+            })
+            ->rawColumns(['name', 'delete', 'updateModal','updatePage'])
             ->make(true);
     }
 
@@ -88,6 +91,11 @@ class SignInController extends Controller
             'email' => $request->mail,
         ]);
         return response()->json(['Success' => 'success']);
+    }
+
+    public function update_view($id){
+        $signIn = SignIn::find($id);
+        return view('panel.login.update', compact('signIn','id'));
     }
 
     public function pdf(Request $request)
