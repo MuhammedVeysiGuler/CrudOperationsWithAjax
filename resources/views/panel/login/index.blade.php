@@ -320,7 +320,7 @@
             });
         }
 
-        $('table#signIn-table thead th').each(function () {
+        $('table#signIn-table tfoot th').each(function () {
             var title = $(this).text();
             $(this).html('<input type="text" placeholder="' + title + '"/>')
         })
@@ -330,7 +330,7 @@
             initComplete: function () {
                 this.api().columns().every(function () {
                     var that = this;
-                    $('input', this.header()).on('keyup change clear', function () {
+                    $('input', this.footer()).on('keyup change clear', function () {
                         if (that.search() !== this.value) {
                             that
                                 .search(this.value)
