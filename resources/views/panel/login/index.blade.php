@@ -320,8 +320,26 @@
             });
         }
 
+        $('table#signIn-table thead th').each(function () {
+            var title = $(this).text();
+            $(this).html('<input type="text" placeholder="' + title + '"/>')
+        })
+
         var dataTable = null;
         dataTable = $('#signIn-table').DataTable({
+            initComplete: function () {
+                this.api().columns().every(function () {
+                    var that = this;
+                    $('input', this.header()).on('keyup change clear', function () {
+                        if (that.search() !== this.value) {
+                            that
+                                .search(this.value)
+                                .draw();
+                        }
+                    })
+                })
+            },
+
             language: {
                 url: '//cdn.datatables.net/plug-ins/1.10.21/i18n/Turkish.json'
             },
@@ -411,7 +429,7 @@
 
             ],
 
-        columns: [
+            columns: [
                 {data: 'id'},
                 {data: 'name'},
                 {data: 'email'},
@@ -455,7 +473,6 @@
             });
         });
     </script>
-
 
 @endsection
 
