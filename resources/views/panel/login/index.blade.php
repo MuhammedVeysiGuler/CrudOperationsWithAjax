@@ -322,7 +322,9 @@
 
         $('table#signIn-table tfoot th').each(function () {
             var title = $(this).text();
-            $(this).html('<input type="text" placeholder="' + title + '"/>')
+            if (title !== "") {
+                $(this).html('<input type="text" placeholder="' + title + '"/>')
+            }
         })
 
         var dataTable = null;
