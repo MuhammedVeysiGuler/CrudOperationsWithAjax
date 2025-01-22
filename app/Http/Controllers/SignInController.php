@@ -2,12 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\SignIn;
+use App\Interfaces\SignInServiceInterface;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 
-class SignInController extends Controller
+class SignInController extends BaseController
 {
+    protected $signInService;
+
+    public function __construct(SignInServiceInterface $service)
+    {
+        parent::__construct($service);
+        $this->signInService = $service;
+    }
+
     public function index()
     {
         return view('panel.login.index');
@@ -15,83 +23,46 @@ class SignInController extends Controller
 
     public function fetch(Request $request)
     {
-        $signIn = SignIn::query();
-
-        // Handle ordering
-        $order = $request->input('order.0');
-        if ($order) {
-            $columnIndex = $order['column'];
-            $columnName = $request->input("columns.{$columnIndex}.data");
-            $columnDirection = $order['dir'];
-
-            if ($columnName) {
-                $signIn->orderBy($columnName, $columnDirection);
-            }
-        }
-
-        // Get total records before filtering
-        $totalRecords = $signIn->count();
-        $filteredRecords = $totalRecords;
-
-        // Get pagination parameters
-        $start = $request->input('start', 0);
-        $length = $request->input('length', 25);
-
-        // Apply pagination
-        $signIn = $signIn->skip($start)->take($length);
-
-        return DataTables::of($signIn)
-            ->with([
-                'recordsTotal' => $totalRecords,
-                'recordsFiltered' => $filteredRecords,
-            ])
-            ->editColumn('name', function ($data) {
-                return $data->name . " " . $data->surname;
-            })
-            ->addColumn('actions', function($row) {
-                return '<button onclick="updateSignIn('.$row->id.')" class="btn btn-warning">Güncelle</button>
-                        <button onclick="deleteSignIn('.$row->id.')" class="btn btn-danger">Sil</button>';
-            })
-            ->addColumn('updateModal', function ($data) {
-                return "<button onclick='updateSignIn(" . $data->id . ")' class='btn btn-warning'>Güncelle Modal</button>";
-            })
-            ->addColumn('updatePage', function ($data) {
-                return '<a href="' . route('sign_in.update_view', $data->id) . '" class="btn btn-warning">Güncelle Page</a>';
-            })
-            ->rawColumns(['name', 'actions', 'updateModal','updatePage'])
-            ->make(true);
+        return $this->signInService->getDataTable();
     }
 
     public function create(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required',
             'surname' => 'required',
             'city' => 'required',
-            'mail' => 'required | email'
+            'mail' => 'required|email'
         ]);
-        $sign_in = new SignIn();
-        $sign_in->name = $request->name;
-        $sign_in->surname = $request->surname;
-        $sign_in->city = $request->city;
-        $sign_in->email = $request->mail;
-        $sign_in->save();
+
+        $data = [
+            'name' => $validated['name'],
+            'surname' => $validated['surname'],
+            'city' => $validated['city'],
+            'email' => $validated['mail']
+        ];
+
+        $this->signInService->create($data);
         return response()->json(['Success' => 'success']);
     }
 
     public function delete(Request $request)
     {
         $request->validate([
-            'id' => 'distinct'
+            'id' => 'required|exists:sign_ins,id'
         ]);
-        SignIn::find($request->id)->delete();
-        return response()->json(['Success' => 'success']);
+
+        try {
+            $this->signInService->delete($request->id);
+            return response()->json(['success' => true, 'message' => 'Record deleted successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Error deleting record'], 500);
+        }
     }
 
     public function get(Request $request)
     {
-
-        $signIn = SignIn::where('id', $request->id)->first();
+        $signIn = $this->signInService->findById($request->id);
         return response([
             'name' => $signIn->name,
             'surname' => $signIn->surname,
@@ -100,26 +71,21 @@ class SignInController extends Controller
         ]);
     }
 
-    public function update(Request $request)
+    public function update(Request $request,$id)
     {
         $request->validate([
             'name' => 'required',
             'surname' => 'required',
             'city' => 'required',
-            'mail' => 'required | email',
+            'mail' => 'required|email',
             'updateId' => 'distinct',
         ]);
-        SignIn::where('id', $request->updateId)->update([
-            'name' => $request->name,
-            'surname' => $request->surname,
-            'city' => $request->city,
-            'email' => $request->mail,
-        ]);
-        return response()->json(['Success' => 'success']);
+
+        return parent::update($request, $request->updateId);
     }
 
     public function update_view($id){
-        $signIn = SignIn::find($id);
+        $signIn = $this->signInService->findById($id);
         return view('panel.login.update', compact('signIn','id'));
     }
 
