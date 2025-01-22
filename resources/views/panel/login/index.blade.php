@@ -90,7 +90,7 @@
             </div>
         </div>
 
-        <div class="pdf container" style="margin: auto;margin-top: 50px;">
+        <div class="pdf container" style="margin: auto; margin-top: 50px;">
             <div class="row">
                 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                     <div class="page-header">
@@ -104,33 +104,28 @@
                     <div class="card p-5">
                         <table id="signIn-table" class="display nowrap dataTable cell-border" style="width:100%">
                             <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Adı - Soyadı</th>
-                                <th>Mail Adresi</th>
-                                <th>Bulunduğu İl</th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                            </tr>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Adı - Soyadı</th>
+                                    <th>Mail Adresi</th>
+                                    <th>Bulunduğu İl</th>
+                                    <th>İşlemler</th>
+                                </tr>
                             </thead>
                             <tfoot>
-                            <tr>
-                                <th>ID</th>
-                                <th>Adı - Soyadı</th>
-                                <th>Mail Adresi</th>
-                                <th>Bulunduğu İl</th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                            </tr>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Adı - Soyadı</th>
+                                    <th>Mail Adresi</th>
+                                    <th>Bulunduğu İl</th>
+                                    <th>İşlemler</th>
+                                </tr>
                             </tfoot>
                         </table>
                     </div>
                     <div class="card-footer clearfix">
                         <button type="button" class="btn btn-info float-left" onclick="openModal()"
-                                data-bs-toggle="#add-modal"><i class="fas fa-plus"></i>Kayıt
-                            Oluştur
+                                data-bs-toggle="#add-modal"><i class="fas fa-plus"></i>Kayıt Oluştur
                         </button>
                         <input type="button" id="rep" value="Pdf Yap" class="btn btn-info btn_print">
                     </div>
@@ -172,6 +167,7 @@
                 contentType: false,
                 cache: false,
                 processData: false,
+                scrollX:true,
                 success: function () {
                     Swal.fire({
                         icon: 'success',
@@ -329,117 +325,31 @@
 
         var dataTable = null;
         dataTable = $('#signIn-table').DataTable({
-            initComplete: function () {
-                this.api().columns().every(function () {
-                    var that = this;
-                    $('input', this.footer()).on('keyup change clear', function () {
-                        if (that.search() !== this.value) {
-                            that
-                                .search(this.value)
-                                .draw();
-                        }
-                    })
-                })
-            },
-
-            language: {
-                url: '//cdn.datatables.net/plug-ins/1.10.21/i18n/Turkish.json'
-            },
-            order: [
-                [0, 'ASC']
-            ],
             processing: true,
             serverSide: true,
-            scrollX: true,
-            scrollY: true,
-            // lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+            searching: false,
+            lengthChange: true,
+            paging: true,
+            displayStart: 0,
+            dom: 'lfrtip',
             ajax: {
                 url: '{!! route('sign_in.fetch') !!}',
-                data: function (data) {
-                    data.veri1 = "veri_1";
-                    data.veri2 = "veri_2";
+                data: function (d) {
+                    d.veri1 = "veri_1";
+                    d.veri2 = "veri_2";
                 }
             },
-
-            dom: 'lBfrtip',
-            buttons: [
-                {
-                    extend: 'collection',
-                    className: 'btn btn-default btn-sm',
-                    text: 'Butonları Kaldır',
-                    buttons: [
-                        {
-                            text: 'Güncelle Modal',
-                            action: function (e, dt, node, config) {
-                                dt.column(-3).visible(!dt.column(-3).visible());
-                            }
-                        },
-                        {
-                            text: 'Güncelle Page',
-                            action: function (e, dt, node, config) {
-                                dt.column(-2).visible(!dt.column(-2).visible());
-                            }
-                        },
-                        {
-                            text: 'Sil',
-                            action: function (e, dt, node, config) {
-                                dt.column(-1).visible(!dt.column(-1).visible());
-                            }
-                        }
-                    ]
-                },
-                {
-                    extend: 'collection',
-                    className: 'btn btn-default btn-sm',
-                    text: 'Dışarı Aktar',
-                    buttons: [
-                        {
-                            extend: 'copy',
-                            text: '<i class="fa fa-files-o"></i> Kopyala',
-                            titleAttr: 'Copy',
-                            className: 'btn btn-default btn-sm'
-                        },
-                        {
-                            extend: 'csv',
-                            text: '<i class="fa fa-files-o"></i> CSV',
-                            titleAttr: 'CSV',
-                            className: 'btn btn-default btn-sm',
-                            exportOptions: {
-                                columns: ':visible'
-                            }
-                        },
-                        {
-                            extend: 'excel',
-                            text: '<i class="fa fa-files-o"></i> Excel',
-                            titleAttr: 'Excel',
-                            className: 'btn btn-default btn-sm',
-                            exportOptions: {
-                                columns: ':visible'
-                            }
-                        },
-                        {
-                            extend: 'pdf',
-                            text: '<i class="fa fa-file-pdf-o"></i> PDF',
-                            titleAttr: 'PDF',
-                            className: 'btn btn-default btn-sm',
-                            exportOptions: {
-                                columns: ':visible'
-                            }
-                        }
-                    ]
-                },
-
-            ],
-
             columns: [
                 {data: 'id'},
                 {data: 'name'},
                 {data: 'email'},
                 {data: 'city'},
-                {data: 'updateModal'},
-                {data: 'updatePage'},
-                {data: 'delete'},
-            ]
+                {data: 'actions'},
+            ],
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.10.21/i18n/Turkish.json'
+            },
+            pageLength: 25,
         });
     </script>
 
@@ -474,6 +384,12 @@
                 });
             });
         });
+    </script>
+
+    <script>
+    function updateRangeLabel(value) {
+        $('#recordRangeLabel').text(value);
+    }
     </script>
 
 @endsection
