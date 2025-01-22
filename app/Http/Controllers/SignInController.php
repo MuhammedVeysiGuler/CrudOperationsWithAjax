@@ -13,19 +13,44 @@ class SignInController extends Controller
         return view('panel.login.index');
     }
 
-    public function fetch()
+    public function fetch(Request $request)
     {
-        $veri1 = \request()->veri1;
-                                        //datatable tarafından gönderilen harici veriler
-        $veri2 = \request()->veri2;
+        $signIn = SignIn::query();
 
-        $signIn = SignIn::all();
+        // Handle ordering
+        $order = $request->input('order.0');
+        if ($order) {
+            $columnIndex = $order['column'];
+            $columnName = $request->input("columns.{$columnIndex}.data");
+            $columnDirection = $order['dir'];
+
+            if ($columnName) {
+                $signIn->orderBy($columnName, $columnDirection);
+            }
+        }
+
+        // Get total records before filtering
+        $totalRecords = $signIn->count();
+        $filteredRecords = $totalRecords;
+
+        // Get pagination parameters
+        $start = $request->input('start', 0);
+        $length = $request->input('length', 25);
+
+        // Apply pagination
+        $signIn = $signIn->skip($start)->take($length);
+
         return DataTables::of($signIn)
+            ->with([
+                'recordsTotal' => $totalRecords,
+                'recordsFiltered' => $filteredRecords,
+            ])
             ->editColumn('name', function ($data) {
                 return $data->name . " " . $data->surname;
             })
-            ->addColumn('delete', function ($data) {
-                return "<button onclick='deleteSignIn(" . $data->id . ")' class='btn btn-danger'>Sil</button>";
+            ->addColumn('actions', function($row) {
+                return '<button onclick="updateSignIn('.$row->id.')" class="btn btn-warning">Güncelle</button>
+                        <button onclick="deleteSignIn('.$row->id.')" class="btn btn-danger">Sil</button>';
             })
             ->addColumn('updateModal', function ($data) {
                 return "<button onclick='updateSignIn(" . $data->id . ")' class='btn btn-warning'>Güncelle Modal</button>";
@@ -33,7 +58,7 @@ class SignInController extends Controller
             ->addColumn('updatePage', function ($data) {
                 return '<a href="' . route('sign_in.update_view', $data->id) . '" class="btn btn-warning">Güncelle Page</a>';
             })
-            ->rawColumns(['name', 'delete', 'updateModal','updatePage'])
+            ->rawColumns(['name', 'actions', 'updateModal','updatePage'])
             ->make(true);
     }
 
