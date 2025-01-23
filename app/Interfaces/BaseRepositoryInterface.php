@@ -4,11 +4,19 @@ namespace App\Interfaces;
 
 interface BaseRepositoryInterface
 {
-    public function getAll();
+
+    public function getAllData();
+
     public function getById($id);
-    public function createNew(array $data);
+
+    public function createNewData(array $data);
+
     public function updateById($id, array $data);
+
     public function deleteById($id);
-    public function getPaginated($perPage = 25);
+
+    public function getPaginated($perPage = 10);
+
     public function getDataTable();
-} 
+
+}

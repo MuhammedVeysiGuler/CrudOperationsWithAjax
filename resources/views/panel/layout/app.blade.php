@@ -17,6 +17,9 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script>
+        var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    </script>
     <title>M-v-G | Crud</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
             integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
@@ -33,15 +36,37 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
     <link href="https://cdn.datatables.net/1.10.24/css/dataTables.bootstrap4.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+
+
+{{--    CUSTOM MODALS   --}}
+
+    <script src="{{ asset('js/ajax/createAjax.js') }}"></script>
+    <script src="{{ asset('js/ajax/updateAjax.js') }}"></script>
+    <script src="{{ asset('js/ajax/deleteAjax.js') }}"></script>
+    <script src="{{ asset('js/ajax/getAjaxData.js') }}"></script>
+
+{{--    CUSTOM MODALS   --}}
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name=csrf-token]').attr('content')
+                }
+            });
+        });
+    </script>
+
 </head>
 <body>
-    @yield('content')
-    @yield('scripts')
 
-    <!-- Scripts -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.24/js/dataTables.bootstrap4.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+@yield('content')
+@yield('scripts')
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.24/js/dataTables.bootstrap4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>

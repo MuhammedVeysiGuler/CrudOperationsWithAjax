@@ -4,10 +4,10 @@ namespace App\Services;
 
 use App\Interfaces\BaseRepositoryInterface;
 use App\Interfaces\BaseServiceInterface;
-use Yajra\DataTables\DataTables;
 
 abstract class BaseService implements BaseServiceInterface
 {
+
     protected $repository;
 
     public function __construct(BaseRepositoryInterface $repository)
@@ -17,7 +17,7 @@ abstract class BaseService implements BaseServiceInterface
 
     public function getAll()
     {
-        return $this->repository->getAll();
+        return $this->repository->getAllData();
     }
 
     public function findById($id)
@@ -27,7 +27,7 @@ abstract class BaseService implements BaseServiceInterface
 
     public function create(array $data)
     {
-        return $this->repository->createNew($data);
+        return $this->repository->createNewData($data);
     }
 
     public function update($id, array $data)
@@ -40,63 +40,14 @@ abstract class BaseService implements BaseServiceInterface
         return $this->repository->deleteById($id);
     }
 
-    public function paginate($perPage = 25)
+    public function paginate($perPage = 10)
     {
         return $this->repository->getPaginated($perPage);
     }
 
-    public function getDataTablesList($request)
-    {
-        $query = $this->repository->getAll();
-
-        // Handle ordering
-        $order = $request->input('order.0');
-        if ($order) {
-            $columnIndex = $order['column'];
-            $columnName = $request->input("columns.{$columnIndex}.data");
-            $columnDirection = $order['dir'];
-
-            if ($columnName) {
-                $query->orderBy($columnName, $columnDirection);
-            }
-        }
-
-        return DataTables::of($query)
-            ->addColumn('actions', function($row) {
-                return $this->getActionButtons($row);
-            })
-            ->rawColumns(['actions'])
-            ->make(true);
-    }
-
-    protected function getActionButtons($row)
-    {
-        return view('panel.components.actions', [
-            'row' => $row,
-            'editRoute' => $this->getEditRoute($row),
-            'deleteRoute' => $this->getDeleteRoute($row),
-            'modelName' => $this->getModelName()
-        ])->render();
-    }
-
-    protected function getEditRoute($row)
-    {
-        // Override in child classes
-    }
-
-    protected function getDeleteRoute($row)
-    {
-        // Override in child classes
-    }
-
-    protected function getModelName()
-    {
-        // Override in child classes
-    }
-
-    // Implement the getDataTable method
     public function getDataTable()
     {
         return $this->repository->getDataTable();
     }
+
 }

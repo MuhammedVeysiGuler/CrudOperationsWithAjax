@@ -3,10 +3,13 @@
 namespace App\Repositories;
 
 use App\Interfaces\BaseRepositoryInterface;
+use App\Traits\DataTableTrait;
 use Illuminate\Database\Eloquent\Model;
 
 abstract class BaseRepository implements BaseRepositoryInterface
 {
+    use DataTableTrait;
+
     protected $model;
 
     public function __construct(Model $model)
@@ -14,17 +17,17 @@ abstract class BaseRepository implements BaseRepositoryInterface
         $this->model = $model;
     }
 
-    public function getAll()
+    public function getAllData()
     {
         return $this->model->all();
     }
 
     public function getById($id)
     {
-        return $this->model->find($id);
+        return $this->model->findOrFail($id);
     }
 
-    public function createNew(array $data)
+    public function createNewData(array $data)
     {
         return $this->model->create($data);
     }
@@ -32,11 +35,8 @@ abstract class BaseRepository implements BaseRepositoryInterface
     public function updateById($id, array $data)
     {
         $record = $this->getById($id);
-        if ($record) {
-            $record->update($data);
-            return $record;
-        }
-        return false;
+        $record->update($data);
+        return $record;
     }
 
     public function deleteById($id)
@@ -44,13 +44,20 @@ abstract class BaseRepository implements BaseRepositoryInterface
         return $this->model->destroy($id);
     }
 
-    public function getPaginated($perPage = 25)
+    public function getPaginated($perPage = 10)
     {
         return $this->model->paginate($perPage);
     }
 
-    public function getDataTable()
+    public function getDataTable($filters = [])
     {
-        throw new \Exception("Method getDataTable not implemented.");
+        $query = $this->model->query();
+        $result = $this->handleDataTableQuery($query, request());
+        return $this->formatDataTableResponse(
+            $result['query']
+            ->orderBy('created_at','desc'),
+            $result['totalRecords'],
+            $result['filteredRecords']
+        );
     }
 }
