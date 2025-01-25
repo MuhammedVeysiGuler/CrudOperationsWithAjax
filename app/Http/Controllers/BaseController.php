@@ -14,27 +14,32 @@ class BaseController extends Controller
         $this->service = $service;
     }
 
-    public function fetchData()
+
+    public function fetchDataTable(Request $request)
     {
-        return $this->service->getAll();
+        return $this->service->getDataTable($request->all());
     }
 
-    public function getData($id)
+
+    public function get($id)
     {
         return $this->service->findById($id);
     }
 
-    public function createData(Request $request)
+
+    public function create(Request $request)
     {
         return $this->service->create($request->all());
     }
 
-    public function updateData(Request $request, $id)
+
+    public function update(Request $request, $id)
     {
         return $this->service->update($id, $request->all());
     }
 
-    public function deleteData($id)
+
+    public function delete($id)
     {
         return $this->service->delete($id);
     }

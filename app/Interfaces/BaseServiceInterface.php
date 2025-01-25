@@ -15,7 +15,5 @@ interface BaseServiceInterface
 
     public function delete($id);
 
-    public function paginate($perPage = 10);
-
     public function getDataTable();
 }

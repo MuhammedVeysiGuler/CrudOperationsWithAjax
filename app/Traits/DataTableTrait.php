@@ -8,7 +8,7 @@ trait DataTableTrait
 {
     protected function handleDataTableQuery($query, $request, $length_size = 10)
     {
-        // Sıralama için
+        // Sıralama
         $order = $request->input('order.0');
         if ($order) {
             $columnIndex = $order['column'];
@@ -16,18 +16,33 @@ trait DataTableTrait
             $columnDirection = $order['dir'];
 
             // sıralanmaya katılacak alanlar ekstradan varsa
-            $orderMapping = $this->getOrderMapping();
-
+            $orderMapping = $this->getOrderMappingDataTable();
             if (array_key_exists($columnName, $orderMapping)) {
                 $query->orderByRaw("{$orderMapping[$columnName]} $columnDirection");
             } elseif ($columnName) {
                 $query->orderBy($columnName, $columnDirection);
             }
         }
-
-        // Filtrelemeden önceki total sayılar
         $totalRecords = $query->count();
-        $filteredRecords = $totalRecords;
+
+        // Arama
+        $search = $request->input('search.value');
+        if ($search) {
+            $searchMapping = $this->getSearchMappingDataTable();
+            $query->where(function ($q) use ($search, $searchMapping) {
+                foreach ($searchMapping as $fieldName => $dbColumn) {
+                    //  dd($fieldName,$dbColumn,$search);
+                    if (is_numeric($fieldName)) {
+                        $q->orWhere($dbColumn, 'LIKE', "%{$search}%");
+                    } else {
+                        $q->orWhereRaw("{$dbColumn} LIKE ?", ["%{$search}%"]);
+                    }
+                }
+            });
+            $filteredRecords = $query->count();
+        } else {
+            $filteredRecords = $totalRecords;
+        }
 
         // Paginatleme parametreleri
         $start = $request->input('start', 0);
@@ -53,19 +68,21 @@ trait DataTableTrait
      *     // Add more mappings as needed
      * ];
      */
-    abstract protected function getOrderMapping();
+    abstract protected function getOrderMappingDataTable();
 
     /**
+     * Aranmasını istediğin tüm kolonlar yazılacak, yazılmayan kolonlar aramaya dahil edilmez.
      * Aranacak olan kolon adları ve ver tabanındaki karşılıkları
      *
      * @return array
      * Örnek:
      * return [
+     *      "KOLON-ADI" => "VERİ TABANI KARŞILIĞI"
      *     'full_name' => "CONCAT(name, ' ', surname)",
      *     // Add more mappings as needed
      * ];
      */
-    abstract protected function getSearchMapping();
+    abstract protected function getSearchMappingDataTable();
 
     /**
      * DataTable yanıtını formatlar.
@@ -139,6 +156,6 @@ trait DataTableTrait
      * Kullanıcılar bu metod içinde, her satır için özelleştirilmiş aksiyon butonlarını tanımlamalıdır.
      *
      */
-    abstract protected function getActionButtons($row);
+    abstract protected function getActionButtonsDataTable($row);
 
 }

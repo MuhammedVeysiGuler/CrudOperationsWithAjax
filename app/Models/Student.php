@@ -11,5 +11,10 @@ class Student extends Model
 
     protected $table = 'students';
 
-    protected $fillable = ['name','surname','city','email'];
+    protected $fillable = ['name', 'surname', 'city', 'email', 'lesson_id'];
+
+    public function lesson()
+    {
+        return $this->belongsTo(Lesson::class);
+    }
 }

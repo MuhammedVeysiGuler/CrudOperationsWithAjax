@@ -20,7 +20,7 @@ class CreateLessonsTable extends Migration
         });
 
         $faker = Faker::create();
-        for ($i = 1; $i <= 100; $i++) {
+        for ($i = 1; $i <= 20; $i++) {
             $akts = [4, 8, 12, 16, 24];
             $akts_value = $akts[array_rand($akts)];
 

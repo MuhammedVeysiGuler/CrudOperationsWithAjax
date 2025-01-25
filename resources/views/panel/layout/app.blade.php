@@ -20,7 +20,7 @@
     <script>
         var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     </script>
-    <title>M-v-G | Crud</title>
+    <title>BabaSultan23 | Crud</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
             integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <link rel="stylesheet" type="text/css"
@@ -61,7 +61,6 @@
 <body>
 
 @yield('content')
-@yield('scripts')
 
 <!-- Scripts -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

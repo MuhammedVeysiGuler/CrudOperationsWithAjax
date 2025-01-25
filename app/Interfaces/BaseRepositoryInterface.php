@@ -15,8 +15,6 @@ interface BaseRepositoryInterface
 
     public function deleteById($id);
 
-    public function getPaginated($perPage = 10);
-
     public function getDataTable();
 
 }

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Helpers\Helper;
 use App\Interfaces\BaseRepositoryInterface;
 use App\Interfaces\BaseServiceInterface;
 
@@ -25,29 +26,34 @@ abstract class BaseService implements BaseServiceInterface
         return $this->repository->getById($id);
     }
 
+
     public function create(array $data)
     {
+        foreach ($data as $key => $value) {
+            $data[$key] = Helper::scriptStripper($value);
+        }
         return $this->repository->createNewData($data);
     }
 
+
     public function update($id, array $data)
     {
+        foreach ($data as $key => $value) {
+            $data[$key] = Helper::scriptStripper($value);
+        }
         return $this->repository->updateById($id, $data);
     }
+
 
     public function delete($id)
     {
         return $this->repository->deleteById($id);
     }
 
-    public function paginate($perPage = 10)
-    {
-        return $this->repository->getPaginated($perPage);
-    }
 
-    public function getDataTable()
+    public function getDataTable($filters = [])
     {
-        return $this->repository->getDataTable();
+        return $this->repository->getDataTable($filters);
     }
 
 }

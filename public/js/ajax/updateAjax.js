@@ -33,13 +33,14 @@ function updateAjax(dataTableName, formId, url, modalId, successMessage = 'Günc
         },
         error: function (data) {
             var errors = '';
+
             for (datas in data.responseJSON.errors) {
-                errors += data.responseJSON.errors[datas] + '\n';
+                errors += data.responseJSON.errors[datas].join('<br>') + '<br>';
             }
             Swal.fire({
                 icon: 'error',
                 title: 'Başarısız',
-                html: 'Hata.\n' + errors,
+                html: errors,
             });
         }
     });

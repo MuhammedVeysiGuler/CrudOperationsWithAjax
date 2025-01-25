@@ -24,17 +24,14 @@ function getAjaxData(dataTableName, url, modalId, fieldMapping, dataId = null) {
         },
         error: function (data) {
             var errors = '';
-            if (data.responseJSON && data.responseJSON.errors) { // Hata mesajları varsa işle
-                for (datas in data.responseJSON.errors) {
-                    errors += data.responseJSON.errors[datas] + '\n';
-                }
-            } else {
-                errors = 'Bilinmeyen bir hata oluştu.'; // Genel hata mesajı
+
+            for (datas in data.responseJSON.errors) {
+                errors += data.responseJSON.errors[datas].join('<br>') + '<br>';
             }
             Swal.fire({
                 icon: 'error',
                 title: 'Başarısız',
-                html: 'Hata.\n' + errors,
+                html: errors,
             });
         }
     });

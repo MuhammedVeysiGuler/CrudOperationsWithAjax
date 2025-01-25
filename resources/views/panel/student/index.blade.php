@@ -31,6 +31,14 @@
                                         : </label>
                                     <input type="email" name="email" id="mail" class="form-control" required>
 
+                                    <label class="mb-1" for="mail" style="text-decoration: underline;">Ders Seçiniz
+                                        : </label>
+                                    <select name="lesson_id" id="lesson_id" class="form-control" required>
+                                        <option value="" disabled selected>Seçiniz</option>
+                                        @foreach($lessons as $lesson)
+                                            <option value="{{ $lesson->id }}">{{ $lesson->name }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
                         </form>
@@ -73,6 +81,14 @@
                                         : </label>
                                     <input type="email" name="email" id="mailUpdate" class="form-control" required>
 
+                                    <label class="mb-1" for="mail" style="text-decoration: underline;">Ders Seçiniz
+                                        : </label>
+                                    <select name="lesson_id" id="lesson_idUpdate" class="form-control" required>
+                                        <option value="" disabled selected>Seçiniz</option>
+                                        @foreach($lessons as $lesson)
+                                            <option value="{{ $lesson->id }}">{{ $lesson->name }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
 
                             </div>
@@ -101,18 +117,22 @@
             'columns' => [
                 ['data' => 'id', 'title' => 'ID'],
                 ['data' => 'full_name', 'title' => 'Ad - Soyad'],
+                ['data' => 'lesson_name', 'title' => 'Ders Adı'],
                 ['data' => 'email', 'title' => 'Mail'],
                 ['data' => 'city', 'title' => 'İl'],
                 ['data' => 'actions', 'title' => 'İşlemler', 'orderable' => 'false']
             ],
             'options' => [ // Yeni 'options' dizisi
                 'pageLength' => 10, //opsiyonel, default 10
-                'scrollX' => true, // DataTable genel özelliği eklendi
-                // 'scrollY' => '300px', // İsterseniz scrollY de ekleyebilirsiniz
-                // 'searching' => false, // Arama özelliğini kapatmak için
-                // 'stateSave' => true,
+                'scrollX' => true,
+                'stateSave' => true,
+                // 'scrollY' => '300px',
+                // 'searching' => false,
             ],
             'filters' => [
+                // Herhangi bir filtre olmaması durumunda
+                // [] şeklinde gönderebilirsiniz
+                // 'filters' => [] veya 'filters' => ['html' => [], 'js'=>[]] şeklinde kullanılır
                 'html' => '
                     <div class="row mb-3">
                         <div class="col-md-4">
@@ -122,11 +142,11 @@
                             </select>
                         </div>
                         <div class="col-md-4">
-                            <label for="dateFilter" class="filter-label">Tarih:</label>
+                            <label for="dateFilter" class="filter-label">(Örnek) - Tarih:</label>
                             <input type="date" id="dateFilter" class="form-control">
                         </div>
                         <div class="col-md-4">
-                            <label for="statusFilter" class="filter-label">Durum:</label>
+                            <label for="statusFilter" class="filter-label">(Örnek) - Durum:</label>
                             <select id="statusFilter" class="form-control">
                                 <option value="">Tümü</option>
                                 <option value="active">Aktif</option>
@@ -144,7 +164,6 @@
                     "
                 ]
             ],
-
         ])
                     <div class="card-footer clearfix">
                         <button type="button" class="btn btn-info float-left" onclick="openModal()"
@@ -155,14 +174,6 @@
             </div>
         </div>
     </div>
-
-    {{-- butonlar için gerekli olan kütüphaneler --}}
-    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-    <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.3.2/js/dataTables.buttons.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.3.2/js/buttons.html5.min.js"></script>
-
 
     <script>
 
@@ -197,7 +208,8 @@
                 'surnameUpdate': 'surname',
                 'cityUpdate': 'city',
                 'mailUpdate': 'email',
-                'updateId': 'updateId'
+                'updateId': 'updateId',
+                'lesson_idUpdate': 'lesson_id'
             };
 
             getAjaxData(
@@ -210,7 +222,7 @@
         }
 
         function updateStudentPost() {
-            createAjax(
+            updateAjax(
                 "studentDatatable",              // DataTable Name
                 "update_student",                // formId
                 "{{ route('student.update') }}", // URL
@@ -240,6 +252,3 @@
     </script>
 @endsection
 
-@section('scripts')
-
-@endsection

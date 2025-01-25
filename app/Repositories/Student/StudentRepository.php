@@ -16,23 +16,28 @@ class StudentRepository extends BaseRepository implements StudentRepositoryInter
         parent::__construct($model);
     }
 
-    public function findByEmail($email)
+    public function findByEmail(string $email)
     {
         return $this->model->where('email', $email)->first();
     }
 
-    public function findByCity($city)
+    public function findByCity(string $city_name)
     {
-        return $this->model->where('city', $city)->get();
+        return $this->model->where('city', $city_name)->get();
     }
+
 
     public function getDataTable($filters = [])
     {
         $query = $this->model->query();
 
+        // "lesson_name" için join işlemi
+        $query->leftJoin('lessons', 'students.lesson_id', '=', 'lessons.id')
+            ->select('students.*', 'lessons.name as lesson_name');
+
         // Filtereleri uygula
         if (isset($filters['city']) && $filters['city'] !== '') {
-            $query->where('city', $filters['city']);
+            $query->where('students.city', $filters['city']);
         }
 
         $result = $this->handleDataTableQuery($query, request());
@@ -44,19 +49,21 @@ class StudentRepository extends BaseRepository implements StudentRepositoryInter
         );
     }
 
-    protected function getOrderMapping()
+    protected function getOrderMappingDataTable()
     {
         return [
-            'full_name' => "CONCAT(name, ' ', surname)",
-            // Add more mappings as needed
+            'full_name' => "CONCAT(students.name, ' ', students.surname)", // students tablosundaki full_name
+            'lesson_name' => 'lessons.name', // lessons tablosundaki name
         ];
     }
 
-    protected function getSearchMapping()
+    protected function getSearchMappingDataTable()
     {
         return [
-            'full_name' => "CONCAT(name, ' ', surname)",
-            // Add more mappings as needed
+            'full_name' => "CONCAT(students.name, ' ', students.surname)", // students tablosundaki full_name
+            'lesson_name' => 'lessons.name',
+            'email' => 'students.email',
+            'city' => 'students.city'
         ];
     }
 
@@ -71,17 +78,24 @@ class StudentRepository extends BaseRepository implements StudentRepositoryInter
             ->addColumn('full_name', function ($data) {
                 return $data->name . " " . $data->surname;
             })
+            ->addColumn('lesson_name', function ($data) {
+                return $data->lesson_name;
+            })
             ->filterColumn('full_name', function ($query, $keyword) {
-                $query->whereRaw("CONCAT(name, ' ', surname) LIKE ?", ["%{$keyword}%"]);
+                $query->whereRaw("CONCAT(students.name, ' ', students.surname) LIKE ?", ["%{$keyword}%"]);
+            })
+            ->filterColumn('lesson_name', function ($query, $keyword) {
+                $query->where('lessons.name', 'like', "%{$keyword}%");
             })
             ->addColumn('actions', function ($row) {
-                return $this->getActionButtons($row);
+                return $this->getActionButtonsDataTable($row);
             })
-            ->rawColumns(['full_name', 'actions'])
+            ->rawColumns(['full_name', 'lesson_name', 'actions'])
             ->make(true);
     }
 
-    protected function getActionButtons($row)
+
+    protected function getActionButtonsDataTable($row)
     {
         return '<button onclick="updateStudent(' . $row->id . ')" class="btn btn-warning">Güncelle</button>
                 <button onclick="deleteStudent(' . $row->id . ')" class="btn btn-danger">Sil</button>';

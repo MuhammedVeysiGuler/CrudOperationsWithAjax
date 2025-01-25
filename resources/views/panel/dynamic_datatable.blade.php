@@ -3,7 +3,8 @@
         <h2 class="pageheader-title">{{ $title }}</h2>
     </div>
 </div>
-{!! $filters['html'] !!}
+
+{!! isset($filters['html']) && !empty($filters['html']) ? $filters['html'] : '' !!}
 
 <table id="{{ $tableId }}" class="display nowrap dataTable cell-border" style="width:100%">
     <thead>
@@ -30,7 +31,8 @@
             ajax: {
                 url: '{{ $fetchUrl }}',
                 data: function (d) {
-                    {!! $filters['js']['filterData'] !!}
+                    // If filterData exists and is not empty, inject it
+                    {!! isset($filters['js']['filterData']) && !empty($filters['js']['filterData']) ? $filters['js']['filterData'] : '{}' !!}
                 }
             },
             columns: [
@@ -46,12 +48,12 @@
             ...{!! json_encode($options ?? []) !!}
         });
 
-        // Dinamik filter event listeners
+        @if(isset($filters['js']['filterElements']) && count($filters['js']['filterElements']) > 0)
         @foreach($filters['js']['filterElements'] as $element)
         $('#{{ $element }}').change(function () {
             {{$dataTableName}}.draw();
         });
         @endforeach
+        @endif
     });
 </script>
-

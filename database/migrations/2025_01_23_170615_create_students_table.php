@@ -13,10 +13,12 @@ class CreateStudentsTable extends Migration
     {
         Schema::create('students', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('lesson_id')->nullable();
             $table->string('name');
             $table->string('surname');
             $table->string('city');
             $table->string('email')->unique();
+            //$table->foreign('lesson_id')->references('id')->on('lesson')->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -30,6 +32,7 @@ class CreateStudentsTable extends Migration
                 'surname' => $faker->lastName,
                 'email' => $faker->unique()->safeEmail,
                 'city' => $city,
+                'lesson_id' => rand(1,20),
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

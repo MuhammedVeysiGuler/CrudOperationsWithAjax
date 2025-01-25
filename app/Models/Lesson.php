@@ -11,5 +11,10 @@ class Lesson extends Model
 
     protected $table = 'lessons';
 
-    protected $fillable = ['name','akts','code'];
+    protected $fillable = ['name', 'akts', 'code'];
+
+    public function students()
+    {
+        return $this->hasMany(Student::class);
+    }
 }

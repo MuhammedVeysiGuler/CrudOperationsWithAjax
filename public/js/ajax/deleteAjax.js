@@ -1,4 +1,4 @@
-function deleteAjax(dataTableName,formId, url, modalId, successMessage = 'Silme İşlemi Başarılı',deleteDataId) {
+function deleteAjax(dataTableName, formId, url, modalId, successMessage = 'Silme İşlemi Başarılı', deleteDataId) {
     Swal.fire({
         icon: "warning",
         title: "Emin misiniz?",
@@ -33,15 +33,15 @@ function deleteAjax(dataTableName,formId, url, modalId, successMessage = 'Silme 
                     // table.ajax.reload();
                 },
                 error: function (data) {
+                    var errors = '';
+
+                    for (datas in data.responseJSON.errors) {
+                        errors += data.responseJSON.errors[datas].join('<br>') + '<br>';
+                    }
                     Swal.fire({
-                        icon: "error",
-                        title: "Hata!",
-                        html: "<div id=\"validation-errors\"></div>",
-                        showConfirmButton: true,
-                        confirmButtonText: "Tamam"
-                    });
-                    $.each(data.responseJSON.errors, function (key, value) {
-                        $('#validation-errors').append('<div class="alert alert-danger">' + value + '</div>');
+                        icon: 'error',
+                        title: 'Başarısız',
+                        html: errors,
                     });
                 }
             });

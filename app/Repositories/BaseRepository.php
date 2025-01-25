@@ -44,18 +44,13 @@ abstract class BaseRepository implements BaseRepositoryInterface
         return $this->model->destroy($id);
     }
 
-    public function getPaginated($perPage = 10)
-    {
-        return $this->model->paginate($perPage);
-    }
-
     public function getDataTable($filters = [])
     {
         $query = $this->model->query();
         $result = $this->handleDataTableQuery($query, request());
         return $this->formatDataTableResponse(
             $result['query']
-            ->orderBy('created_at','desc'),
+                ->orderBy('created_at', 'desc'),
             $result['totalRecords'],
             $result['filteredRecords']
         );
