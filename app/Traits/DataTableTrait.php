@@ -131,7 +131,7 @@ trait DataTableTrait
                 'recordsFiltered' => $filteredRecords,
             ])
             ->addColumn('actions', function ($row) {
-                return $this->getActionButtons($row);
+                return $this->getActionButtonsDataTable($row);
             })
             ->rawColumns(['actions'])
             ->make(true);

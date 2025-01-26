@@ -110,19 +110,24 @@
             <div class="row">
                 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                     @include('panel.dynamic_datatable', [
+            'plusButton' =>true, //alt menü - child yapısı için true gönderilecek | varsayılan : false
+            'plusParentIdKey' => 'parent_id',
             'dataTableName' => 'studentDatatable',
             'title' => 'Kayıt Olanlar',
             'tableId' => 'student-table',
             'fetchUrl' => route('student.fetch'),
             'columns' => [
                 ['data' => 'id', 'title' => 'ID'],
+                ['data' => 'plus', 'title' => '','orderable' => 'false'],
                 ['data' => 'full_name', 'title' => 'Ad - Soyad'],
                 ['data' => 'lesson_name', 'title' => 'Ders Adı'],
                 ['data' => 'email', 'title' => 'Mail'],
                 ['data' => 'city', 'title' => 'İl'],
                 ['data' => 'actions', 'title' => 'İşlemler', 'orderable' => 'false']
             ],
-            'options' => [ // Yeni 'options' dizisi
+            'options' => [
+                'processing'=> true,
+                'serverSide'=> true,
                 'pageLength' => 10, //opsiyonel, default 10
                 'scrollX' => true,
                 'stateSave' => true,

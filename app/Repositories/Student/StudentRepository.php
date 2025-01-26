@@ -29,7 +29,13 @@ class StudentRepository extends BaseRepository implements StudentRepositoryInter
 
     public function getDataTable($filters = [])
     {
-        $query = $this->model->query();
+
+        $parentId = $filters['parent_id'] ?? []; // alt menü | parent-child | değişken bladeden dinamik olarak gonderiliyor
+        if ($parentId != 'null' && $parentId) {
+            $query = $this->model->query()->where('parent_id', $parentId); // Alt menüleri filtrele
+        } else {
+            $query = $this->model->query()->whereNull('parent_id'); // Üst menüleri getir (parent_id null olanlar)
+        }
 
         // "lesson_name" için join işlemi
         $query->leftJoin('lessons', 'students.lesson_id', '=', 'lessons.id')
@@ -75,6 +81,11 @@ class StudentRepository extends BaseRepository implements StudentRepositoryInter
                 'recordsTotal' => $totalRecords,
                 'recordsFiltered' => $filteredRecords,
             ])
+            ->addColumn('plus', function ($data) {
+                if (Student::where('parent_id', $data->id)->count() > 0) {
+                    return '<button class="btn btn-success sub-menu-button"><i class="fa fa-plus-circle"></i></button>';
+                }
+            })
             ->addColumn('full_name', function ($data) {
                 return $data->name . " " . $data->surname;
             })
@@ -90,7 +101,7 @@ class StudentRepository extends BaseRepository implements StudentRepositoryInter
             ->addColumn('actions', function ($row) {
                 return $this->getActionButtonsDataTable($row);
             })
-            ->rawColumns(['full_name', 'lesson_name', 'actions'])
+            ->rawColumns(['plus', 'full_name', 'lesson_name', 'actions'])
             ->make(true);
     }
 
