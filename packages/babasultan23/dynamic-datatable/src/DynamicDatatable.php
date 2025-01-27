@@ -10,9 +10,13 @@ class DynamicDatatable
     use Macroable;
 
     protected $orderMapping = [];
+
     protected $searchMapping = [];
+
     protected $actionButtons = null;
+
     protected $formatResponse = null;
+
 
     public function setOrderMapping(array $mapping)
     {
@@ -54,6 +58,7 @@ class DynamicDatatable
         return $this->actionButtons ? call_user_func($this->actionButtons, $row) : '';
     }
 
+
     public function handleDataTableQuery($query, $request)
     {
         $totalRecords = $query->count();
@@ -93,6 +98,7 @@ class DynamicDatatable
             'filteredRecords' => $filteredRecords
         ];
     }
+
 
     public function formatDataTableResponse($query, $totalRecords, $filteredRecords)
     {

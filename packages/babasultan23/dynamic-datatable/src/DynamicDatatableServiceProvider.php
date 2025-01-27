@@ -21,9 +21,19 @@ class DynamicDatatableServiceProvider extends ServiceProvider
     {
         $this->loadViewsFrom(__DIR__.'/Views', 'dynamic-datatable');
 
+        // Config publish
         $this->publishes([
             __DIR__.'/../config/babasultan23-dynamic-datatable.php' => config_path('babasultan23-dynamic-datatable.php'),
-            __DIR__.'/Views' => resource_path('views/vendor/dynamic-datatable'),
-        ]);
+        ], 'config');
+
+        // Views publish
+        $this->publishes([
+            __DIR__.'/Views' => resource_path('views/babasultan23/dynamic-datatable'),
+        ], 'views');
+
+        // JS publish
+        $this->publishes([
+            __DIR__.'/resources/js/babasultan23-dynamic-datatable.js' => public_path('babasultan23/js/babasultan23-crudAjax.js'),
+        ], 'crudAjax');
     }
-} 
+}

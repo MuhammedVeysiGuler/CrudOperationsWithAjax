@@ -1,6 +1,6 @@
 {
     "name": "babasultan23/dynamic-datatable",
-    "description": "Dynamic DataTable package for Laravel",
+    "description": "Laravel için geliştirilmiş dinamik DataTable paketi. CRUD işlemleri için Ajax entegrasyonu, özelleştirilebilir arama, sıralama ve filtreleme özellikleri ile birlikte gelir.",
     "type": "library",
     "license": "MIT",
     "autoload": {

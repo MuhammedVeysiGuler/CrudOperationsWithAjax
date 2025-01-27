@@ -3,12 +3,12 @@
 return [
     /*
     |--------------------------------------------------------------------------
-    | DataTable Default Options
+    | DataTable Varsayılan Seçenekleri
     |--------------------------------------------------------------------------
     |
-    | These are the default options that will be used for all datatables
-    | rendered using this package. You can override these options on a
-    | per-table basis.
+    | Bunlar, bu paket kullanılarak oluşturulan tüm datatables için kullanılacak
+    | varsayılan seçeneklerdir. Bu seçenekleri tablo bazında geçersiz
+    | kılabilirsiniz.
     |
     */
     'options' => [
@@ -20,11 +20,11 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Default Classes
+    | Varsayılan CSS Sınıfları
     |--------------------------------------------------------------------------
     |
-    | These are the default CSS classes that will be used for the datatable
-    | elements. You can override these classes on a per-table basis.
+    | Bunlar, datatable öğeleri için kullanılacak varsayılan CSS sınıflarıdır.
+    | Bu sınıfları tablo bazında geçersiz kılabilirsiniz.
     |
     */
     'classes' => [
@@ -34,11 +34,11 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Default View Path
+    | Varsayılan Görünüm Yolu
     |--------------------------------------------------------------------------
     |
-    | This is the default view path that will be used for the datatable.
-    | You can override this path on a per-table basis.
+    | Bu, datatable için kullanılacak varsayılan görünüm yoludur.
+    | Bu yolu tablo bazında geçersiz kılabilirsiniz.
     |
     */
     'view' => 'dynamic-datatable::dynamic_datatable',

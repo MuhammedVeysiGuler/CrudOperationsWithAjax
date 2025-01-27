@@ -44,6 +44,8 @@
     <script src="{{ asset('js/ajax/updateAjax.js') }}"></script>
     <script src="{{ asset('js/ajax/deleteAjax.js') }}"></script>
     <script src="{{ asset('js/ajax/getAjaxData.js') }}"></script>
+    <script src="{{ asset('babasultan23/js/babasultan23-crudAjax.js') }}"></script>
+
 
 {{--    CUSTOM MODALS   --}}
 
