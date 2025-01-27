@@ -176,7 +176,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\RepositoryServiceProvider::class,
 
-       // Muhammedveysiguler\DynamicDatatable\DynamicDatatableServiceProvider::class,
+       //BabaSultan23\DynamicDatatable\DynamicDatatableServiceProvider::class,
     ],
 
     /*

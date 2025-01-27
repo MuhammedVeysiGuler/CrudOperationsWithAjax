@@ -12,7 +12,7 @@ Bu paket, Laravel projelerinde DataTables kullanımını kolaylaştırmak için 
 
 1. Composer ile paketi yükleyin:
 ```bash
-composer require muhammedveysiguler/dynamic-datatable
+composer require babasultan23/dynamic-datatable
 ```
 
 2. Service Provider ve Facade otomatik olarak yüklenir. Manuel eklemek isterseniz `config/app.php` dosyasına ekleyin:
@@ -20,18 +20,18 @@ composer require muhammedveysiguler/dynamic-datatable
 ```php
 'providers' => [
     // ...
-    Muhammedveysiguler\DynamicDatatable\DynamicDatatableServiceProvider::class,
+    BabaSultan23\DynamicDatatable\DynamicDatatableServiceProvider::class,
 ],
 
 'aliases' => [
     // ...
-    'DynamicDatatable' => Muhammedveysiguler\DynamicDatatable\Facades\DynamicDatatable::class,
+    'BabaSultan23DynamicDatatable' => BabaSultan23\DynamicDatatable\Facades\BabaSultan23DynamicDatatable::class,
 ]
 ```
 
 3. Konfigürasyon ve view dosyalarını publish edin:
 ```bash
-php artisan vendor:publish --provider="Muhammedveysiguler\DynamicDatatable\DynamicDatatableServiceProvider"
+php artisan vendor:publish --provider="BabaSultan23\DynamicDatatable\DynamicDatatableServiceProvider"
 ```
 
 ## Kullanım
@@ -40,7 +40,7 @@ php artisan vendor:publish --provider="Muhammedveysiguler\DynamicDatatable\Dynam
 
 #### Controller:
 ```php
-use Muhammedveysiguler\DynamicDatatable\Facades\DynamicDatatable;
+use BabaSultan23\DynamicDatatable\Facades\BabaSultan23DynamicDatatable;
 
 class YourController extends Controller
 {
@@ -50,15 +50,15 @@ class YourController extends Controller
             ['data' => 'id', 'title' => 'ID'],
             ['data' => 'name', 'title' => 'Ad'],
             ['data' => 'email', 'title' => 'E-posta'],
-            ['data' => 'actions', 'title' => 'İşlemler', 'orderable' => false]
+            ['data' => 'actions', 'title' => 'İşlemler', 'orderable' => 'false']
         ];
 
-        $dataTable = DynamicDatatable::render(
-            tableId: 'my-table',
-            dataTableName: 'myDatatable',
-            columns: $columns,
-            fetchUrl: route('data.fetch'),
-            title: 'Tablo Başlığı'
+        $dataTable = BabaSultan23DynamicDatatable::render(
+            tableId: 'my-table',                // DataTable id    <table id="{{ my-table }}" >
+            dataTableName: 'myDatatable',       // DataTable adı    var {{ myDatatable }} = $('#{{ $tableId }}').DataTable({
+            columns: $columns,                  // Tablo kolonları
+            fetchUrl: route('data.fetch'),      // Veri çekme URL'i
+            title: 'Tablo Başlığı'              // Tablo Başlığı    <h2 class="pageheader-title">{{ $title }}</h2>
         );
 
         return view('your-view', compact('dataTable'));
@@ -97,7 +97,7 @@ class YourController extends Controller
 Özel sıralama tanımlamaları için kullanılır. Özellikle birleştirilmiş alanlar veya ilişkili tablolardaki alanlar için kullanışlıdır.
 
 ```php
-DynamicDatatable::setOrderMapping([
+BabaSultan23DynamicDatatable::setOrderMapping([
     'full_name' => "CONCAT(students.name, ' ', students.surname)",
     'lesson_name' => 'lessons.name',
 ]);
@@ -107,7 +107,7 @@ DynamicDatatable::setOrderMapping([
 Arama yapılacak alanları ve nasıl aranacaklarını tanımlar.
 
 ```php
-DynamicDatatable::setSearchMapping([
+BabaSultan23DynamicDatatable::setSearchMapping([
     'full_name' => "CONCAT(students.name, ' ', students.surname)",
     'lesson_name' => 'lessons.name',
     'email' => 'students.email',
@@ -119,7 +119,7 @@ DynamicDatatable::setSearchMapping([
 Her satır için aksiyon butonlarını tanımlar.
 
 ```php
-DynamicDatatable::setActionButtons(function($row) {
+BabaSultan23DynamicDatatable::setActionButtons(function($row) {
     return '
         <button onclick="edit('.$row->id.')" class="btn btn-warning">Düzenle</button>
         <button onclick="delete('.$row->id.')" class="btn btn-danger">Sil</button>
@@ -131,7 +131,7 @@ DynamicDatatable::setActionButtons(function($row) {
 DataTable yanıtını özelleştirmek için kullanılır.
 
 ```php
-DynamicDatatable::setFormatResponse(function($query, $totalRecords, $filteredRecords) {
+BabaSultan23DynamicDatatable::setFormatResponse(function($query, $totalRecords, $filteredRecords) {
     return DataTables::of($query)
         ->with([
             'recordsTotal' => $totalRecords,
@@ -150,7 +150,7 @@ DynamicDatatable::setFormatResponse(function($query, $totalRecords, $filteredRec
             $query->where('lessons.name', 'like', "%{$keyword}%");
         })
         ->addColumn('actions', function($row) {
-            return DynamicDatatable::getActionButtons($row);
+            return BabaSultan23DynamicDatatable::getActionButtons($row);
         })
         ->rawColumns(['actions'])
         ->make(true);
@@ -161,12 +161,12 @@ DynamicDatatable::setFormatResponse(function($query, $totalRecords, $filteredRec
 DataTable'ı oluşturur ve görüntüler.
 
 ```php
-DynamicDatatable::render(
-    tableId: 'users-table',              // DataTable id
-    dataTableName: 'usersTable',         // DataTable adı
+BabaSultan23DynamicDatatable::render(
+    tableId: 'users-table',              // DataTable id    <table id="my-table" >
+    dataTableName: 'usersTable',         // DataTable adı    var myDatatable = $('#{{ $tableId }}').DataTable({
     columns: $columns,                   // Tablo kolonları
     fetchUrl: route('users.fetch'),      // Veri çekme URL'i
-    title: 'Kullanıcılar',               // Tablo başlığı
+    title: 'Kullanıcılar',               // Tablo Başlığı    <h2 class="pageheader-title">{{ $title }}</h2>
     options: [                           // DataTable seçenekleri || boş array [] gönderilebilir
         'pageLength' => 10,      // default 10 
         'processing' => true,
@@ -218,7 +218,7 @@ DynamicDatatable::render(
 ```php
 public function fetch(Request $request)
 {
-    $query = Student::query();
+    $query = Student::query();   // Veri yalnızca query builder olarak sağlanmalıdır. all(), get(), take(), limit() gibi yöntemlerin kullanılması desteklenmemektedir.
 
     $parentId = $request->parent_id ?? [];
     if ($parentId != 'null' && $parentId) {
@@ -227,16 +227,16 @@ public function fetch(Request $request)
         $query = $query->whereNull('parent_id');
     }
 
-    $query->leftJoin('lessons', 'students.lesson_id', '=', 'lessons.id')
+    $query->leftJoin('lessons', 'students.lesson_id', '=', 'lessons.id')   // Varsa relationlarınız bu şekilde eklenebilir
         ->select('students.*', 'lessons.name as lesson_name');
 
     if (isset($request->city) && $request->city !== '') {
         $query->where('students.city', $request->city);
     }
 
-    $result = DynamicDatatable::handleDataTableQuery($query, $request);
+    $result = BabaSultan23DynamicDatatable::handleDataTableQuery($query, $request);  
 
-    return DynamicDatatable::formatDataTableResponse(
+    return BabaSultan23DynamicDatatable::formatDataTableResponse(
         $result['query'],
         $result['totalRecords'],
         $result['filteredRecords']
@@ -249,7 +249,7 @@ public function fetch(Request $request)
 Tüm ayar metodları zincirleme kullanılabilir:
 
 ```php
-DynamicDatatable::setOrderMapping([...])
+BabaSultan23DynamicDatatable::setOrderMapping([...])
     ->setSearchMapping([...])
     ->setActionButtons(function($row) { ... })
     ->setFormatResponse(function($query, $totalRecords, $filteredRecords) { ... });
@@ -266,7 +266,7 @@ resources/views/vendor/dynamic-datatable/dynamic_datatable.blade.php
 ### 2. Konfigürasyon
 Publish edilen config dosyasından varsayılan ayarları değiştirebilirsiniz:
 ```bash
-config/dynamic-datatable.php
+config/babasultan23-dynamic-datatable.php
 ```
 
 ### Özel Filtreli Kullanım Örneği:

@@ -35,10 +35,10 @@ class DynamicDatatableController extends Controller
         ?string $plusParentIdKey = null
     ) {
 
-        $defaultOptions = config('dynamic-datatable.options', []);
+        $defaultOptions = config('babasultan23-dynamic-datatable.options', []);
         $options = array_merge($defaultOptions, $options);
 
-        return view(config('dynamic-datatable.view'), compact(
+        return view(config('babasultan23-dynamic-datatable.view'), compact(
             'columns',
             'fetchUrl',
             'title',

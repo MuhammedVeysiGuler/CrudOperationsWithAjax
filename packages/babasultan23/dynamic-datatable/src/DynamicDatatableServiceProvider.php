@@ -13,7 +13,7 @@ class DynamicDatatableServiceProvider extends ServiceProvider
         });
 
         $this->mergeConfigFrom(
-            __DIR__.'/../config/dynamic-datatable.php', 'dynamic-datatable'
+            __DIR__.'/../config/babasultan23-dynamic-datatable.php', 'babasultan23-dynamic-datatable'
         );
     }
 
@@ -22,7 +22,7 @@ class DynamicDatatableServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/Views', 'dynamic-datatable');
 
         $this->publishes([
-            __DIR__.'/../config/dynamic-datatable.php' => config_path('dynamic-datatable.php'),
+            __DIR__.'/../config/babasultan23-dynamic-datatable.php' => config_path('babasultan23-dynamic-datatable.php'),
             __DIR__.'/Views' => resource_path('views/vendor/dynamic-datatable'),
         ]);
     }

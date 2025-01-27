@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Lesson;
 use App\Models\Student;
 use Illuminate\Http\Request;
-use BabaSultan23\DynamicDatatable\Facades\DynamicDatatable as BabaSultan23DynamicDatatable;
+use BabaSultan23\DynamicDatatable\Facades\BabaSultan23DynamicDatatable;
 use Yajra\DataTables\DataTables;
 
 class PackageController extends Controller

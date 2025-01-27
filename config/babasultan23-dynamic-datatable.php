@@ -14,6 +14,7 @@ return [
     'options' => [
         'lengthMenu' => [[10, 25, 50, 100], [10, 25, 50, 100]],
         'responsive' => true,
+        'scrollX' => true,
         'autoWidth' => false,
     ],
 

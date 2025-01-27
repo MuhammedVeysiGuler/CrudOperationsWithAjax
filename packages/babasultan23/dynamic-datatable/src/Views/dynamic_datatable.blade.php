@@ -6,7 +6,7 @@
 
 {!! isset($filters['html']) && !empty($filters['html']) ? $filters['html'] : '' !!}
 
-<table id="{{ $tableId }}" class="display nowrap dataTable cell-border" style="width:100%">
+<table id="{{ $tableId }}" class="{{ config('babasultan23-dynamic-datatable.classes.table') }}" style="width:100%">
     <thead>
     <tr>
         @foreach($columns as $column)
@@ -102,8 +102,8 @@
                 var childTableId = '{{ $tableId }}_child_' + level + '_' + timestamp + '_' + randomNum;
 
                 // Alt tablo container'ı oluştur
-                var childTableHtml = '<div class="child-table-container p-3" style="margin-left: ' + (level * 20) + 'px">' +
-                    '<table id="' + childTableId + '" class="display nowrap dataTable cell-border" style="width:100%">' +
+                var childTableHtml = '<div class="{{ config('babasultan23-dynamic-datatable.classes.container') }}" style="margin-left: ' + (level * 20) + 'px">' +
+                    '<table id="' + childTableId + '" class="{{ config('babasultan23-dynamic-datatable.classes.table') }}" style="width:100%">' +
                     '<thead><tr>';
 
                 @foreach($columns as $column)
