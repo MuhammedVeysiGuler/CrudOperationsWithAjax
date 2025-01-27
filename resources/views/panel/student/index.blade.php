@@ -126,8 +126,6 @@
                 ['data' => 'actions', 'title' => 'İşlemler', 'orderable' => 'false']
             ],
             'options' => [
-                'processing'=> true,
-                'serverSide'=> true,
                 'pageLength' => 10, //opsiyonel, default 10
                 'scrollX' => true,
                 'stateSave' => true,
@@ -253,7 +251,6 @@
                 });
             }
         });
-
     </script>
 @endsection
 

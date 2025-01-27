@@ -41,14 +41,11 @@ class CreateStudentsTable extends Migration
             ]);
         }
 
-        $studentIds = DB::table('students')->pluck('id')->toArray(); // Öğrencilerin ID'lerini alıyoruz
-
-        $students = \App\Models\Student::all(); // Öğrencileri alıyoruz
+        $studentIds = DB::table('students')->pluck('id')->toArray();
+        $students = \App\Models\Student::all();
 
         foreach ($students as $student) {
-
             $parentMenuId = (rand(0, 1) == 1) ? Arr::random($studentIds) : null;
-
             $student->parent_id = $parentMenuId;
             $student->save();
         }

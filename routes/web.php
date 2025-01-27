@@ -15,3 +15,6 @@ Route::prefix('student')->group(function () {
     Route::post('/update', [StudentController::class, 'updateStudent'])->name('student.update');
     Route::post('/delete', [StudentController::class, 'deleteStudent'])->name('student.delete');
 });
+
+Route::get('/package-test', [App\Http\Controllers\PackageController::class, 'index'])->name('package.index');
+Route::get('/package-test/fetch', [App\Http\Controllers\PackageController::class, 'fetch'])->name('package.fetch');

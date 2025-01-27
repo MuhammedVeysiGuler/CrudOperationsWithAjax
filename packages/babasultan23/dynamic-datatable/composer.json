@@ -1,0 +1,34 @@
+{
+    "name": "babasultan23/dynamic-datatable",
+    "description": "Laravel için geliştirilmiş dinamik DataTable paketi. CRUD işlemleri için Ajax entegrasyonu, özelleştirilebilir arama, sıralama ve filtreleme özellikleri ile birlikte gelir.",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "BabaSultan23\\DynamicDatatable\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "BabaSultan23",
+            "email": "m.veysiguler@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": "^7.3|^8.0",
+        "laravel/framework": "^8.0|^9.0|^10.0",
+        "yajra/laravel-datatables-oracle": "*"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "BabaSultan23\\DynamicDatatable\\DynamicDatatableServiceProvider"
+            ],
+            "aliases": {
+                "BabaSultan23DynamicDatatable": "BabaSultan23\\DynamicDatatable\\Facades\\BabaSultan23DynamicDatatable"
+            }
+        }
+    },
+    "version": "1.0.0"
+}
