@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2763c9a9d64bf533adbc6fdeffc4f15f",
+    "content-hash": "339d5cfc58879104c7e762ab7e69e014",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -61,6 +61,49 @@
                 "source": "https://github.com/asm89/stack-cors/tree/v2.2.0"
             },
             "time": "2023-11-14T13:51:46+00:00"
+        },
+        {
+            "name": "babasultan23/dynamic-datatable",
+            "version": "dev-repository-service",
+            "dist": {
+                "type": "path",
+                "url": "packages/babasultan23/dynamic-datatable",
+                "reference": "a5fbfb32acd540497accb061c9231b153f7b2085"
+            },
+            "require": {
+                "laravel/framework": "^8.0|^9.0|^10.0",
+                "php": "^7.3|^8.0",
+                "yajra/laravel-datatables-oracle": "^9.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "BabaSultan23\\DynamicDatatable\\DynamicDatatableServiceProvider"
+                    ],
+                    "aliases": {
+                        "BabaSultan23DynamicDatatable": "BabaSultan23\\DynamicDatatable\\Facades\\DynamicDatatable"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "BabaSultan23\\DynamicDatatable\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Muhammed Veysi Güler",
+                    "email": "muhammedveysiguler@gmail.com"
+                }
+            ],
+            "description": "Dynamic DataTable package for Laravel",
+            "transport-options": {
+                "relative": true
+            }
         },
         {
             "name": "brick/math",

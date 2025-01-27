@@ -1,0 +1,33 @@
+{
+    "name": "babasultan23/dynamic-datatable",
+    "description": "Dynamic DataTable package for Laravel",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "BabaSultan23\\DynamicDatatable\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Muhammed Veysi Güler",
+            "email": "muhammedveysiguler@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": "^7.3|^8.0",
+        "laravel/framework": "^8.0|^9.0|^10.0",
+        "yajra/laravel-datatables-oracle": "^9.0"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "BabaSultan23\\DynamicDatatable\\DynamicDatatableServiceProvider"
+            ],
+            "aliases": {
+                "BabaSultan23DynamicDatatable": "BabaSultan23\\DynamicDatatable\\Facades\\DynamicDatatable"
+            }
+        }
+    }
+}

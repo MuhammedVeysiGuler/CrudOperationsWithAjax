@@ -253,7 +253,6 @@
                 });
             }
         });
-
     </script>
 @endsection
 
