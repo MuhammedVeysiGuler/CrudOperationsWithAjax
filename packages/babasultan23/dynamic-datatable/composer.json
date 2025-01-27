@@ -10,11 +10,11 @@
     },
     "authors": [
         {
-            "name": "Muhammed Veysi Güler",
-            "email": "muhammedveysiguler@gmail.com"
+            "name": "BabaSultan23",
+            "email": "m.veysiguler@gmail.com"
         }
     ],
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "require": {
         "php": "^7.3|^8.0",
         "laravel/framework": "^8.0|^9.0|^10.0",
@@ -29,5 +29,6 @@
                 "BabaSultan23DynamicDatatable": "BabaSultan23\\DynamicDatatable\\Facades\\DynamicDatatable"
             }
         }
-    }
+    },
+    "version": "1.0.0"
 }
