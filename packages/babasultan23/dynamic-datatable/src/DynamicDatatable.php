@@ -17,6 +17,7 @@ class DynamicDatatable
 
     protected $formatResponse = null;
 
+    protected $manuelSearchCallback = null;
 
     public function setOrderMapping(array $mapping)
     {
@@ -30,7 +31,6 @@ class DynamicDatatable
         return $this;
     }
 
-
     public function setActionButtons(callable $callback)
     {
         $this->actionButtons = $callback;
@@ -40,6 +40,12 @@ class DynamicDatatable
     public function setFormatResponse(callable $callback)
     {
         $this->formatResponse = $callback;
+        return $this;
+    }
+
+    public function setManuelSearchCallback(callable $callback)
+    {
+        $this->manuelSearchCallback = $callback;
         return $this;
     }
 
@@ -58,14 +64,25 @@ class DynamicDatatable
         return $this->actionButtons ? call_user_func($this->actionButtons, $row) : '';
     }
 
+    public function handleManuelSearch($query, $searchValue)
+    {
+        if ($this->manuelSearchCallback && $searchValue) {
+            return call_user_func($this->manuelSearchCallback, $query, $searchValue);
+        }
+        return $query;
+    }
 
     public function handleDataTableQuery($query, $request)
     {
         $totalRecords = $query->count();
         $filteredRecords = $totalRecords;
 
-        // Search
-        if ($request->search && $request->search['value']) {
+        // Manuel Search
+        if ($request->manuel_search) {
+            $query = $this->handleManuelSearch($query, $request->manuel_search);
+            $filteredRecords = $query->count();
+        } // Normal Search (only if manuel search is not active)
+        else if ($request->search && $request->search['value']) {
             $searchValue = $request->search['value'];
             $query->where(function ($q) use ($searchValue) {
                 foreach ($this->searchMapping as $column => $field) {
@@ -99,7 +116,6 @@ class DynamicDatatable
         ];
     }
 
-
     public function formatDataTableResponse($query, $totalRecords, $filteredRecords)
     {
         if ($this->formatResponse) {
@@ -114,27 +130,69 @@ class DynamicDatatable
             ->make(true);
     }
 
+    public function processDataTableRequest($query, $request)
+    {
+        $result = $this->handleDataTableQuery($query, $request);
+        return $this->formatDataTableResponse(
+            $result['query'],
+            $result['totalRecords'],
+            $result['filteredRecords']
+        );
+    }
+
     public function render(
-        string $tableId,
-        string $dataTableName,
-        array $columns,
-        string $fetchUrl,
-        string $title = '',
-        array $options = [],
-        array $filters = [],
-        bool $plusButton = false,
-        string $plusParentIdKey = 'parent_id'
-    ) {
-        return view('dynamic-datatable::dynamic_datatable', compact(
+        string  $tableId,
+        string  $dataTableName,
+        array   $columns,
+        string  $fetchUrl,
+        string  $title = '',
+        array   $options = [],
+        array   $filters = [],
+        bool    $plusButton = false,
+        string  $plusParentIdKey = 'parent_id',
+        bool    $manuelSearch = false,
+        ?string $language = null
+    )
+    {
+        // Merge default options from config with user options
+        $defaultOptions = config('babasultan23-dynamic-datatable.options', []);
+        $mergedOptions = array_merge($defaultOptions, $options);
+
+        // Manuel search aktif ise default search'ü kapat
+        if ($manuelSearch) {
+            $mergedOptions['searching'] = false;
+        }
+
+        // Dil ayarlarını ekle
+        $defaultLanguage = 'tr';
+        $selectedLanguage = $language ?? $defaultLanguage;
+
+        // Dil dosyasını yükle
+        $languageData = trans('datatable::datatable', [], $selectedLanguage);
+        if (!empty($languageData)) {
+            $mergedOptions['language'] = $languageData;
+        }
+
+        // Get default classes from config
+        $defaultClasses = config('babasultan23-dynamic-datatable.classes', [
+            'table' => 'display nowrap dataTable cell-border',
+            'container' => 'child-table-container p-3',
+        ]);
+
+        $viewPath = 'dynamic-datatable::dynamic_datatable';
+
+        return view($viewPath, compact(
             'tableId',
             'dataTableName',
             'columns',
             'fetchUrl',
             'title',
-            'options',
+            'mergedOptions',
             'filters',
             'plusButton',
-            'plusParentIdKey'
+            'plusParentIdKey',
+            'defaultClasses',
+            'manuelSearch'
         ));
     }
 }

@@ -13,27 +13,30 @@ class DynamicDatatableServiceProvider extends ServiceProvider
         });
 
         $this->mergeConfigFrom(
-            __DIR__.'/../config/babasultan23-dynamic-datatable.php', 'babasultan23-dynamic-datatable'
+            __DIR__ . '/../config/babasultan23-dynamic-datatable.php', 'babasultan23-dynamic-datatable'
         );
     }
 
     public function boot()
     {
-        $this->loadViewsFrom(__DIR__.'/Views', 'dynamic-datatable');
+        $this->loadViewsFrom(__DIR__ . '/Views', 'dynamic-datatable');
+
+        // Dil dosyalarını yükle
+        $this->loadTranslationsFrom(__DIR__ . '/../lang', 'datatable');
+
+        // Lang publish
+        $this->publishes([
+            __DIR__ . '/../lang' => lang_path('datatable'),
+        ], 'lang_path');
 
         // Config publish
         $this->publishes([
-            __DIR__.'/../config/babasultan23-dynamic-datatable.php' => config_path('babasultan23-dynamic-datatable.php'),
+            __DIR__ . '/../config/babasultan23-dynamic-datatable.php' => config_path('babasultan23-dynamic-datatable.php'),
         ], 'config');
-
-        // Views publish
-        $this->publishes([
-            __DIR__.'/Views' => resource_path('views/babasultan23/dynamic-datatable'),
-        ], 'views');
 
         // JS publish
         $this->publishes([
-            __DIR__.'/resources/js/babasultan23-dynamic-datatable.js' => public_path('babasultan23/js/babasultan23-crudAjax.js'),
+            __DIR__ . '/resources/js/babasultan23-dynamic-crud-ajax.js' => public_path('babasultan23/js/babasultan23-crudAjax.js'),
         ], 'crudAjax');
     }
 }

@@ -30,11 +30,7 @@ class PackageController extends Controller
             fetchUrl: route('package.fetch'),
             title: 'TITLE DENEME',
             options: [
-                'pageLength' => 10,
-                'processing' => true,
-                'serverSide' => true,
-                'scrollX' => true,
-                'stateSave' => false,
+                 'pageLength' => 10,  //config içinden de ayarlanbilir, tabloya özel custom özellik için
             ],
             filters: [
                 'html' => '
@@ -69,7 +65,9 @@ class PackageController extends Controller
                 ]
             ],
             plusButton: true,
-            plusParentIdKey: 'parent_id'
+            plusParentIdKey: 'parent_id',
+            manuelSearch: false,
+            language: 'tr' // default olarak da tr geliyor, yazmana gerek yok App::getLocale() ile dinamik kullanabilirsin
         );
 
         $cities = ['Ankara', 'Istanbul', 'Izmir'];
@@ -93,6 +91,11 @@ class PackageController extends Controller
             ->setActionButtons(function ($row) {
                 return '<button onclick="updateStudent(' . $row->id . ')" class="btn btn-warning">Güncelle</button>
                         <button onclick="deleteStudent(' . $row->id . ')" class="btn btn-danger">Sil</button>';
+            })
+            ->setManuelSearchCallback(function ($query, $searchValue) {
+                return $query->where(function($q) use ($searchValue) {
+                    $q->where('lessons.name', 'like', "%{$searchValue}%");
+                });
             })
             ->setFormatResponse(function ($query, $totalRecords, $filteredRecords) {
                 return DataTables::of($query)
@@ -140,12 +143,6 @@ class PackageController extends Controller
             $query->where('students.city', $request->city);
         }
 
-        $result = BabaSultan23DynamicDatatable::handleDataTableQuery($query, $request);
-
-        return BabaSultan23DynamicDatatable::formatDataTableResponse(
-            $result['query'],
-            $result['totalRecords'],
-            $result['filteredRecords']
-        );
+        return BabaSultan23DynamicDatatable::processDataTableRequest($query, $request);
     }
 }

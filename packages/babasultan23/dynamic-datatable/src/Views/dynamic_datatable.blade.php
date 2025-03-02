@@ -6,24 +6,31 @@
 
 {!! isset($filters['html']) && !empty($filters['html']) ? $filters['html'] : '' !!}
 
-<table id="{{ $tableId }}" class="{{ config('babasultan23-dynamic-datatable.classes.table') }}" style="width:100%">
-    <thead>
-    <tr>
-        @foreach($columns as $column)
-            <th>{{ $column['title'] }}</th>
-        @endforeach
-    </tr>
-    </thead>
-    <tbody></tbody>
-    <tfoot>
-    <tr>
-        @foreach($columns as $column)
-            <th>{{ $column['title'] }}</th>
-        @endforeach
-    </tr>
-    </tfoot>
-</table>
-
+<div class="table-container" style="position: relative;">
+    <table id="{{ $tableId }}" class="{{ $defaultClasses['table'] }}" style="width:100%">
+        @if($manuelSearch)
+            <div class="col-md-4 manuel-search" style="position: absolute;z-index: 9999; right: 0; top: 0; display: flex; align-items: center; justify-content: flex-end;">
+                <label for="dateFilter" class="form-label">Ara:</label>
+                <input type="text" id="manuel-search-{{ $tableId }}" placeholder="" class="form-control" style="width:170px">
+            </div>
+        @endif
+        <thead>
+        <tr>
+            @foreach($columns as $column)
+                <th>{{ $column['title'] }}</th>
+            @endforeach
+        </tr>
+        </thead>
+        <tbody></tbody>
+        <tfoot>
+        <tr>
+            @foreach($columns as $column)
+                <th>{{ $column['title'] }}</th>
+            @endforeach
+        </tr>
+        </tfoot>
+    </table>
+</div>
 <script type="text/javascript">
     $(document).ready(function () {
         var {{$dataTableName}} = $('#{{ $tableId }}').DataTable({
@@ -32,6 +39,9 @@
             ajax: {
                 url: '{{ $fetchUrl }}',
                 data: function (d) {
+                    @if($manuelSearch)
+                    d.manuel_search = $('#manuel-search-{{ $tableId }}').val();
+                    @endif
                     // If filterData exists and is not empty, inject it
                     {!! isset($filters['js']['filterData']) && !empty($filters['js']['filterData']) ? $filters['js']['filterData'] : '{}' !!}
                 }
@@ -55,7 +65,7 @@
                 }
             },
             @endif
-            ...{!! json_encode($options ?? []) !!}
+            ...{!! json_encode($mergedOptions ?? []) !!}
         });
 
         @if(isset($filters['js']['filterElements']) && count($filters['js']['filterElements']) > 0)
@@ -102,8 +112,8 @@
                 var childTableId = '{{ $tableId }}_child_' + level + '_' + timestamp + '_' + randomNum;
 
                 // Alt tablo container'ı oluştur
-                var childTableHtml = '<div class="{{ config('babasultan23-dynamic-datatable.classes.container') }}" style="margin-left: ' + (level * 20) + 'px">' +
-                    '<table id="' + childTableId + '" class="{{ config('babasultan23-dynamic-datatable.classes.table') }}" style="width:100%">' +
+                var childTableHtml = '<div class="{{ $defaultClasses['container'] }}" style="margin-left: ' + (level * 20) + 'px">' +
+                    '<table id="' + childTableId + '" class="{{ $defaultClasses['table'] }}" style="width:100%">' +
                     '<thead><tr>';
 
                 @foreach($columns as $column)
@@ -135,7 +145,7 @@
                         }@if(!$loop->last),@endif
                         @endforeach
                     ],
-                    ...{!! json_encode($options ?? []) !!}
+                    ...{!! json_encode($mergedOptions ?? []) !!}
                 });
 
                 // Alt tabloya click handler ekle
@@ -153,6 +163,15 @@
             e.stopPropagation(); // Event'in üst elementlere yayılmasını engelle
             createSubTable({{$dataTableName}}, $(this).closest('tr'), 1, '{{ $plusParentIdKey }}'); // Dinamik key
         });
+        @endif
+
+        @if($manuelSearch)
+        // Manuel search functionality
+
+        $('#manuel-search-{{ $tableId }}').on('keyup', function(){
+            {{$dataTableName}}.draw();
+        });
+
         @endif
     });
 </script>
