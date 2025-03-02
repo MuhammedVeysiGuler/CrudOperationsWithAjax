@@ -361,6 +361,11 @@ function createStudent() {
 </li>
 </ul>
 
+## Örnek Görünüm
+
+![Dynamic Datatable Örneği](./readme_example_picture/table.png)
+
+
 ## Katkıda Bulunma
 
 Katkılarınızı bekliyoruz! Lütfen Pull Request göndermekten çekinmeyin.
