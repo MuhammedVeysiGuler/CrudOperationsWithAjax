@@ -1,10 +1,21 @@
 function createAjax(dataTableName, formId, url, modalId, successMessage = 'Kaydetme Başarılı') {
-    var formData = new FormData(document.getElementById(formId));
+    var formElement = document.getElementById(formId);
+    var formData = new FormData(formElement);
+
+    // CKEditor içeriğini FormData'ya ekle
+    if (typeof CKEDITOR !== 'undefined') {
+        for (var instance in CKEDITOR.instances) {
+            if (document.getElementById(instance)) { // Eğer formda bu alan varsa
+                formData.set(instance, CKEDITOR.instances[instance].getData());
+            }
+        }
+    }
+
     $.ajax({
         type: 'POST',
         url: url,
         data: formData,
-        headers: {'X-CSRF-TOKEN': csrfToken},  // CSRF token JS'den geliyor
+        headers: {'X-CSRF-TOKEN': csrfToken},
         dataType: "json",
         contentType: false,
         processData: false,
@@ -14,16 +25,20 @@ function createAjax(dataTableName, formId, url, modalId, successMessage = 'Kayde
                 title: 'Başarılı',
                 html: successMessage
             }).then(ok => {
-                window.location.reload()
+                window.location.reload();
             });
 
-            // Formu sıfırlama
-            var elements = document.getElementById(formId).elements;
-            for (var i = 0, element; element = elements[i++];) {
-                element.value = "";
+            // Formu sıfırla
+            formElement.reset();
+
+            // CKEditor içeriğini temizle
+            if (typeof CKEDITOR !== 'undefined') {
+                for (var instance in CKEDITOR.instances) {
+                    CKEDITOR.instances[instance].setData('');
+                }
             }
 
-            // Modal'ı kapatma
+            // Modal'ı kapat
             $(modalId).modal("toggle");
 
             // DataTable'ı yeniden yükleme
@@ -139,13 +154,23 @@ function getAjaxData(dataTableName, url, modalId, fieldMapping, dataId = null) {
 
 
 function updateAjax(dataTableName, formId, url, modalId, successMessage = 'Güncelleme Başarılı') {
+    var formElement = document.getElementById(formId);
+    var formData = new FormData(formElement);
 
-    var formData = new FormData(document.getElementById(formId));
+    // CKEditor içeriğini FormData'ya ekle
+    if (typeof CKEDITOR !== 'undefined') {
+        for (var instance in CKEDITOR.instances) {
+            if (document.getElementById(instance)) {
+                formData.set(instance, CKEDITOR.instances[instance].getData());
+            }
+        }
+    }
+
     $.ajax({
         type: 'POST',
         url: url,
         data: formData,
-        headers: {'X-CSRF-TOKEN': csrfToken},  // CSRF token JS'den geliyor
+        headers: {'X-CSRF-TOKEN': csrfToken},
         dataType: "json",
         contentType: false,
         processData: false,
@@ -155,16 +180,20 @@ function updateAjax(dataTableName, formId, url, modalId, successMessage = 'Günc
                 title: 'Başarılı',
                 html: successMessage
             }).then(ok => {
-                window.location.reload()
+                window.location.reload();
             });
 
-            // Formu sıfırlama
-            var elements = document.getElementById(formId).elements;
-            for (var i = 0, element; element = elements[i++];) {
-                element.value = "";
+            // Formu sıfırla
+            formElement.reset();
+
+            // CKEditor içeriğini temizle
+            if (typeof CKEDITOR !== 'undefined') {
+                for (var instance in CKEDITOR.instances) {
+                    CKEDITOR.instances[instance].setData('');
+                }
             }
 
-            // Modal'ı kapatma
+            // Modal'ı kapat
             $(modalId).modal("toggle");
 
             // DataTable'ı yeniden yükleme
@@ -184,6 +213,4 @@ function updateAjax(dataTableName, formId, url, modalId, successMessage = 'Günc
             });
         }
     });
-
-
 }
